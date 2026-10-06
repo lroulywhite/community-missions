@@ -1,0 +1,8 @@
+.DS_Store
+node_modules/
+.env
+.env.*
+*.log
+.wrangler/
+worker/.dev.vars
+__pycache__/

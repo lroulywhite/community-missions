@@ -1,0 +1,1251 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Community missions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#1c1e61;--primary:#4146e0;--violet:#9B59B6;--accent:#674DE6;--page:#e9e5e1;--text:#555770;--meta:#68737d;--border:#e6e0dc;--divider:#f2f2f7;--tint:#EEEFFD;--ok:#1B7A4B;--bad:#B3261E;--warn:#7A5B00;--grad:linear-gradient(120deg,#1c1e61,#4146e0 60%,#9B59B6)}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--page);color:var(--text);font:15px/1.55 "Plus Jakarta Sans",Verdana,Geneva,sans-serif}
+body.embed{background:transparent}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+a{color:var(--primary);font-weight:600}
+h1,h2,h3{color:var(--ink)}
+:focus-visible{outline:3px solid var(--primary);outline-offset:2px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.shell{max-width:760px;margin:24px auto 40px;padding:0 12px}
+.shell.wide{max-width:1160px}
+body.embed .shell{margin:0 auto;padding:0}
+.card{background:#fff;border-radius:16px;box-shadow:0 20px 60px rgba(28,30,97,.18);overflow:hidden}
+
+/* demo bar */
+.demo{max-width:1160px;margin:16px auto 0;padding:0 12px;font-size:13px}
+.demo-in{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;background:rgba(255,255,255,.7);border-radius:12px;padding:8px 12px}
+.seg{display:inline-flex;border:1px solid var(--border);border-radius:10px;overflow:hidden;background:#fff}
+.seg button{border:0;background:#fff;padding:5px 12px;font-weight:700;color:var(--ink)}
+.seg button[aria-pressed=true]{background:var(--ink);color:#fff}
+.segs{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.segs label{display:inline-flex;gap:5px;align-items:center;border:1px solid var(--border);border-radius:999px;padding:2px 10px;background:#fff}
+.segs input{accent-color:var(--primary)}
+.demo .note{color:var(--meta);margin-left:auto}
+
+/* header band */
+.hd{position:relative;overflow:hidden;background:var(--grad);color:#fff;padding:24px 28px 44px}
+.hd .wm{position:absolute;top:-34px;right:-34px;width:190px;opacity:.14;pointer-events:none}
+.hd .logo{display:block;height:28px;width:auto;margin:0 0 22px}
+.hd .kicker{position:relative;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.8)}
+.hd .hero{position:relative;margin:6px 0 0;color:#fff;font-size:clamp(22px,4.4vw,30px);line-height:1.2;font-weight:800;letter-spacing:-.01em;max-width:520px}
+.hd .lead{position:relative;margin:8px 0 0;color:rgba(255,255,255,.85);max-width:520px}
+.hd .bal{position:absolute;top:24px;right:28px;text-align:right;background:rgba(255,255,255,.14);border-radius:12px;padding:8px 14px}
+.hd .bal b{display:block;font-size:26px;line-height:1.1;font-weight:800;color:#fff}
+.hd .bal span{font-size:12px;color:rgba(255,255,255,.85)}
+.hd.nologo .bal{top:20px}
+.track{position:relative;height:8px;border-radius:99px;background:rgba(255,255,255,.22);margin:38px 10px 0}
+.track .fill{position:absolute;left:0;top:0;bottom:0;border-radius:99px;background:#fff;transition:width .5s ease}
+.track ol{list-style:none;margin:0;padding:0}
+.node{position:absolute;top:50%}
+.node .dot{position:absolute;left:0;top:0;width:18px;height:18px;margin:-9px 0 0 -9px;border-radius:50%;background:#2a2c8a;border:3px solid rgba(255,255,255,.55)}
+.node.on .dot{background:#fff;border-color:#fff}
+.node .nl{position:absolute;top:16px;left:0;transform:translateX(-50%);white-space:nowrap;font-size:13px;font-weight:700;text-align:center;color:#fff}
+.node .nl small{display:block;font-weight:500;opacity:.8;font-size:12px}
+.node.first .nl{transform:none;left:-9px;text-align:left}
+.node.last .nl{transform:translateX(-100%);left:9px;text-align:right}
+.hd .pad{height:30px}
+.hd.admin{padding-bottom:30px}
+
+/* tabs + body */
+.tabs{display:flex;gap:2px;border-bottom:2px solid var(--divider);padding:6px 16px 0;overflow-x:auto}
+.tabs button{border:0;background:none;padding:12px 14px;font-weight:700;color:var(--meta);border-bottom:3px solid transparent;margin-bottom:-2px;white-space:nowrap}
+.tabs button[aria-current=page]{color:var(--ink);border-bottom-color:var(--primary)}
+.tabs .count{margin-left:6px;background:var(--primary);color:#fff;border-radius:99px;padding:0 7px;font-size:12px;font-weight:700}
+.body{padding:18px 28px 28px;min-height:260px}
+
+/* filters: outlined violet pills (Customer Hub section-CTA style) */
+.filters{display:flex;flex-wrap:wrap;gap:8px 20px;margin:0 0 6px}
+.pills{display:flex;flex-wrap:wrap;gap:6px}
+.pill{border:1px solid var(--violet);background:transparent;color:#85429F;border-radius:999px;padding:4px 12px;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.pill[aria-pressed=true]{background:var(--ink);border-color:var(--ink);color:#fff}
+
+/* sections + items (Customer Hub item rows) */
+.group{border-top:2px solid var(--divider);margin-top:20px;padding-top:6px}
+.group:first-of-type{border-top:0;margin-top:10px}
+.group h2{font-size:18px;margin:10px 0 4px;font-weight:800}
+.item{display:flex;width:100%;align-items:center;gap:14px;text-align:left;background:none;border:0;border-radius:12px;padding:12px 8px;margin:0 -8px;width:calc(100% + 16px)}
+.item:hover{background:#FAFAFE}
+.tile{flex:none;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-size:21px;color:#fff}
+.ibody{flex:1;min-width:0}
+.ititle{display:block;font-weight:800;color:var(--ink)}
+.isub{display:block;font-size:14px;color:var(--text)}
+.imeta{display:flex;flex-wrap:wrap;gap:0 14px;font-size:13px;color:var(--meta)}
+.iside{flex:none;display:flex;flex-direction:column;align-items:flex-end;gap:4px;min-width:112px}
+.pts{display:inline-block;background:var(--tint);color:var(--primary);font-weight:800;border-radius:999px;padding:2px 12px}
+.cta{font-size:13px;font-weight:700;color:var(--primary);white-space:nowrap}
+.chip{display:inline-block;font-size:12px;font-weight:700;padding:2px 9px;border-radius:99px;background:var(--divider);color:var(--ink);white-space:nowrap}
+.chip.ok{background:#DDF3E7;color:var(--ok)}
+.chip.wait{background:#FFF4C2;color:var(--warn)}
+.chip.bad{background:#FBE0DD;color:var(--bad)}
+.chip.mute{background:#EEE;color:#555}
+.empty{padding:40px 10px;text-align:center;color:var(--meta)}
+
+/* lists + tables */
+.list{list-style:none;margin:0;padding:0}
+.list>li{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;border-top:2px solid var(--divider);padding:14px 4px}
+.list>li:first-child{border-top:0}
+.list .grow{flex:1;min-width:200px}
+.list .t{font-weight:800;color:var(--ink)}
+.list .m{font-size:13px;color:var(--meta)}
+.btn{white-space:nowrap;border:1px solid var(--primary);background:var(--primary);color:#fff;border-radius:10px;padding:8px 16px;font-weight:700}
+.btn.ghost{background:#fff;color:var(--primary)}
+.btn.danger{background:#fff;color:var(--bad);border-color:var(--bad)}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.btn.sm{padding:4px 10px;font-size:13px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:10px 8px;border-top:2px solid var(--divider);vertical-align:top}
+th{font-size:13px;color:var(--meta);font-weight:700;border-top:0}
+.tablewrap{overflow-x:auto}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;align-items:center}
+.toolbar .sp{flex:1}
+.rank{display:flex;gap:12px;align-items:center}
+.rank .n{width:26px;font-weight:800;color:var(--meta)}
+li.me{background:var(--tint);border-radius:12px}
+input[type=text],input[type=search],input[type=url],input[type=number],input[type=date],select,textarea{width:100%;border:1px solid var(--border);border-radius:10px;padding:9px 11px;background:#fff}
+label.f{display:block;font-weight:700;font-size:14px;margin:12px 0 4px;color:var(--ink)}
+.hint{font-size:13px;color:var(--meta);margin:4px 0 0}
+.inline{display:flex;gap:8px;align-items:center}
+code,pre{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px}
+pre{background:var(--ink);color:#E8E8FF;border-radius:12px;padding:12px 14px;overflow:auto;white-space:pre-wrap;word-break:break-all}
+.sec-h{font-size:18px;font-weight:800;margin:0 0 6px}
+
+/* footer */
+.ft{background:var(--ink);color:rgba(255,255,255,.8);padding:22px 28px;font-size:13px}
+.ft img{height:18px;width:auto;opacity:.9;display:block;margin-bottom:12px}
+.ft p{margin:0 0 6px}
+.ft a{color:#fff}
+.ft .copy{opacity:.55;font-size:12px}
+
+/* dialog sheet */
+dialog{border:0;padding:0;margin:0 0 0 auto;height:100dvh;max-height:none;width:min(500px,100%);background:#fff;color:var(--text);border-radius:16px 0 0 16px;box-shadow:-12px 0 40px rgba(28,30,97,.25);overflow:auto}
+dialog::backdrop{background:rgba(28,30,97,.45)}
+.banner{background:var(--grad);padding:18px 22px;display:flex;justify-content:space-between;align-items:center}
+.badge{display:inline-flex;gap:6px;align-items:center;background:rgba(255,255,255,.18);color:#fff;font-weight:700;font-size:13px;border-radius:999px;padding:4px 12px}
+.x{border:0;background:rgba(255,255,255,.18);color:#fff;border-radius:10px;width:34px;height:34px;font-size:20px;line-height:1;flex:none}
+.sheet{padding:20px 22px 28px}
+.sheet h2{margin:0;font-size:22px;line-height:1.25}
+.facts{display:grid;grid-template-columns:auto 1fr;gap:4px 16px;margin:16px 0;font-size:14px}
+.facts dt{color:var(--meta)}
+.facts dd{margin:0;font-weight:700;color:var(--ink)}
+.notice{border-radius:12px;padding:10px 12px;background:var(--tint);margin:14px 0;font-size:14px;color:var(--ink)}
+.notice.warn{background:#FFF4C2;color:#4D3900}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
+.check{display:flex;gap:8px;align-items:center;margin-top:14px;font-weight:700;color:var(--ink)}
+#toast{position:fixed;inset:auto auto 22px 50%;margin:0;border:0;width:max-content;transform:translate(-50%,20px);background:var(--ink);color:#fff;padding:10px 16px;border-radius:10px;opacity:0;pointer-events:none;transition:.25s;z-index:99;max-width:90vw}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+@media (max-width:640px){.hd{padding:20px 20px 40px}.hd .bal{position:static;display:inline-block;margin-top:14px;text-align:left}.body{padding:16px 18px 24px}.iside{align-items:flex-start;min-width:0;flex-direction:row;flex-wrap:wrap;margin-left:58px;width:100%}.item{flex-wrap:wrap}.ibody{flex-basis:calc(100% - 60px)}.grid2{grid-template-columns:1fr}.node .nl small{display:none}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* ---- Zealot-style admin additions ---- */
+.sp{flex:1}
+.tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;background:var(--divider);color:var(--ink);border-radius:6px;padding:1px 7px;margin-top:3px}
+.tile.sm{width:36px;height:36px;font-size:17px;border-radius:10px}
+.tcell{display:flex;gap:10px;align-items:center}
+table.mt td{vertical-align:middle}
+.pinbtn{border:0;background:none;filter:grayscale(1);opacity:.35;font-size:15px}
+.pinbtn.on{filter:none;opacity:1}
+.switch{width:38px;height:22px;border-radius:99px;border:0;background:#C9C9E0;position:relative;padding:0}
+.switch span{position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:left .15s}
+.switch[aria-checked=true]{background:var(--primary)}
+.switch[aria-checked=true] span{left:19px}
+.bar{height:5px;border-radius:99px;background:var(--divider);margin-top:4px;width:110px}
+.bar i{display:block;height:100%;border-radius:99px;background:var(--primary)}
+.menu{position:relative}
+.menu summary{list-style:none;cursor:pointer;font-size:20px;line-height:1;padding:4px 8px;border-radius:8px;color:var(--meta)}
+.menu summary::-webkit-details-marker{display:none}
+.menu[open] summary{background:var(--divider)}
+.menu-pop{position:absolute;right:0;top:100%;z-index:5;background:#fff;border:1px solid var(--border);border-radius:12px;box-shadow:0 12px 30px rgba(28,30,97,.18);min-width:180px;padding:6px;display:flex;flex-direction:column}
+.menu-pop button{border:0;background:none;text-align:left;padding:8px 10px;border-radius:8px;font-weight:600;color:var(--ink)}
+.menu-pop button:hover{background:var(--divider)}
+.menu-pop .bad{color:var(--bad)}
+.subtabs{display:flex;gap:4px;border-bottom:2px solid var(--divider);margin:0 0 14px}
+.subtabs button{border:0;background:none;padding:8px 14px;font-weight:700;color:var(--meta);border-bottom:3px solid transparent;margin-bottom:-2px}
+.subtabs button[aria-current=page]{color:var(--primary);border-bottom-color:var(--primary)}
+.statcards{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:14px}
+.statcards.three{grid-template-columns:repeat(3,1fr)}
+.stat{border:1px solid var(--border);border-radius:14px;padding:12px 16px}
+.stat b{display:block;font-size:26px;color:var(--ink);line-height:1.1}
+.stat span{font-size:13px;color:var(--meta)}
+.cardgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
+.cardgrid.sm{grid-template-columns:repeat(auto-fill,minmax(170px,1fr))}
+.rcard,.bcard,.scard{border:1px solid var(--border);border-radius:14px;padding:14px;background:#fff;display:flex;flex-direction:column;gap:6px}
+.rcard h3,.bcard h3{margin:0;font-size:16px}
+.rcard p,.bcard p{margin:0}
+.rimg{position:relative;height:110px;border-radius:12px;background:linear-gradient(135deg,#EEEFFD,#E8DDF3);display:grid;place-items:center;font-size:42px}
+.rimgsm{background:linear-gradient(135deg,#EEEFFD,#E8DDF3);color:inherit}
+.newtag{position:absolute;top:8px;left:8px;font-size:11px;font-weight:700;background:var(--ink);color:#fff;border-radius:99px;padding:1px 8px}
+.rfoot{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:4px}
+.rcard.prev{max-width:260px}
+.bcard{align-items:flex-start}
+.bcard.off{opacity:.55}
+.bhead{display:flex;justify-content:space-between;width:100%;align-items:flex-start}
+.bimg{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--ink),var(--accent));display:grid;place-items:center;font-size:26px}
+.scard header{display:flex;gap:10px;align-items:center}
+.scard header .chip{margin-left:auto}
+.av{width:34px;height:34px;border-radius:50%;background:var(--grad);color:#fff;display:grid;place-items:center;font-weight:800}
+.sbody{max-height:230px;overflow:auto;border-top:2px solid var(--divider);padding-top:8px}
+.qa{margin-bottom:10px;font-size:14px}
+.qlabel{display:block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--violet)}
+.ans{display:inline-block;margin-top:4px;background:var(--tint);color:var(--primary);font-weight:600;border-radius:8px;padding:2px 9px;font-size:13px}
+.wiz{display:grid;grid-template-columns:210px 1fr;gap:26px}
+.stepper{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:14px}
+.stepper li{display:flex;gap:10px;align-items:center;color:var(--meta)}
+.stepper .sn{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;border:2px solid var(--border);font-weight:800;flex:none}
+.stepper small{display:block;font-size:12px}
+.stepper li.cur{color:var(--ink)}
+.stepper li.cur .sn{background:var(--primary);border-color:var(--primary);color:#fff}
+.stepper li.done .sn{background:var(--ink);border-color:var(--ink);color:#fff}
+.sec{border-top:2px solid var(--divider);padding:14px 0 6px}
+.sec:first-child{border-top:0;padding-top:0}
+.sub-h{font-size:15px;margin:18px 0 4px}
+.typecards{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin:8px 0}
+.typecards.three{grid-template-columns:repeat(3,1fr)}
+.tcard{display:flex;flex-direction:column;gap:2px;text-align:left;background:#fff;border:1px solid var(--border);border-radius:14px;padding:12px 14px}
+.tcard span{font-size:20px}
+.tcard b{color:var(--ink)}
+.tcard small{color:var(--meta);font-size:13px}
+.tcard.sel{border-color:var(--primary);background:var(--tint);box-shadow:0 0 0 1px var(--primary)}
+.chk{display:flex;flex-wrap:wrap;gap:8px 16px;margin:10px 0}
+.check2,.opt{display:flex;gap:8px;align-items:center;font-weight:600;color:var(--ink)}
+.opt{font-weight:500;padding:5px 0;color:var(--text)}
+.qcard{border:1px solid var(--border);border-radius:14px;padding:12px 14px;margin:12px 0}
+.qhead{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.logic{margin-top:10px}.logic summary{cursor:pointer;font-weight:700;color:var(--primary)}
+.wiznav{border-top:2px solid var(--divider);padding-top:14px;margin-top:18px}
+.flowviz{display:flex;flex-direction:column;align-items:center;gap:0;margin:12px 0}
+.fnode{border:1px solid var(--border);border-radius:14px;padding:10px 20px;min-width:240px;text-align:center;box-shadow:0 6px 20px rgba(28,30,97,.08)}
+.fnode b{display:block;color:var(--ink)}.fnode small{color:var(--meta)}
+.fline{width:2px;height:22px;background:var(--violet)}
+fieldset.qf{border:0;border-top:2px solid var(--divider);margin:0;padding:12px 0}
+fieldset.qf[hidden]{display:none}
+fieldset.qf.err legend{color:var(--bad)}
+fieldset.qf legend{font-weight:700;color:var(--ink);padding:0}
+.req{color:var(--bad)}
+.intro{background:var(--tint);border-radius:12px;padding:10px 12px;color:var(--ink)}
+@media (max-width:640px){.wiz{grid-template-columns:1fr}.statcards.three{grid-template-columns:1fr}.typecards.three{grid-template-columns:1fr}}
+.toolbar select{width:auto}
+.toolbar input[type=search]{flex:0 1 260px}
+
+/* ---- UX pass ---- */
+.typecards.big{grid-template-columns:repeat(auto-fill,minmax(210px,1fr))}
+.typecards.big .tcard{padding:18px}.typecards.big .tcard span{font-size:26px}
+.editor{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:26px;align-items:start}
+.eprev{position:sticky;top:12px}
+.prevcard{border:1px solid var(--border);border-radius:16px;padding:14px;background:var(--page)}
+.prevcard .item.static{background:#fff;border-radius:12px;margin:0;width:100%;cursor:default}
+.item.static:hover{background:#fff}
+.prevcard .inside{background:#fff;border-radius:12px;padding:12px;margin-top:10px}
+.pq{margin:8px 0}.pq b{display:block;color:var(--ink);font-size:14px}
+.popt{font-size:14px;padding:2px 0}.pfake{height:34px;border:1px solid var(--border);border-radius:10px;margin-top:4px;background:#fff}
+.upnext{margin-bottom:12px}
+.upgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.upcard{display:flex;gap:10px;align-items:center;text-align:left;background:var(--tint);border:0;border-radius:14px;padding:10px 12px}
+.upcard:hover{box-shadow:0 0 0 2px var(--primary) inset}
+.upcard .ititle{font-size:14px}
+.rprog{display:flex;gap:16px;align-items:center;justify-content:space-between;margin-top:10px;border:1px solid var(--border);border-radius:14px;padding:10px 14px}
+.rprog .bar.wide{flex:0 0 180px}
+.bar.wide{width:100%;height:8px}
+@media (max-width:900px){.editor{grid-template-columns:1fr}.eprev{position:static}.rprog{flex-direction:column;align-items:flex-start}.rprog .bar.wide{flex:none;width:100%}}
+.upcard .ititle{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.upcard .ibody{min-width:0}
+
+/* ---- images ---- */
+.ic{flex:none}
+.tile{overflow:hidden}
+.tile img,.rimg img,.bimg img,.uprev img{width:100%;height:100%;object-fit:cover;display:block}
+.rimg img{position:absolute;inset:0;border-radius:inherit}
+.rimg{color:var(--primary)}
+.bimg{overflow:hidden;color:#fff}
+.rimgsm{color:var(--primary)}
+.banner.hasimg{min-height:150px;align-items:flex-start;background-size:cover;background-position:center}
+.uploader{display:flex;gap:14px;align-items:center;border:1.5px dashed #C9C9E0;border-radius:14px;padding:12px;margin-top:4px}
+.uploader.drag{border-color:var(--primary);background:var(--tint)}
+.uprev{flex:none;width:84px;height:84px;border-radius:14px;overflow:hidden;background:var(--divider);display:grid;place-items:center;color:var(--meta)}
+.uprev.round{border-radius:50%}
+.uploader .hint{margin:6px 0 0}
+.btn:has(input:focus-visible){outline:3px solid var(--primary);outline-offset:2px}
+.pbox{display:inline-block;width:13px;height:13px;border:1.5px solid var(--meta);border-radius:3px;vertical-align:-2px;margin-right:4px}
+.pbox.round{border-radius:50%}
+.tcard .ic{color:var(--primary)}
+.errmsg{color:var(--bad);font-weight:700;font-size:14px;margin:10px 0 0}
+.errmsg[hidden]{display:none}
+input[aria-invalid=true],textarea[aria-invalid=true]{border-color:var(--bad);box-shadow:0 0 0 1px var(--bad)}
+fieldset.qf.err{background:#FDF1F0;border-radius:10px;padding-left:8px;padding-right:8px}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<dialog id="dlg" aria-labelledby="dlg-title"></dialog>
+<div id="toast" role="status" aria-live="polite" popover="manual"></div>
+
+<script src="data/config.js"></script>
+<script src="data/missions.js"></script>
+<script>
+(function(){
+'use strict';
+
+/* ---------- config + helpers ---------- */
+const LOAD_WARN = [];
+if (!window.MB_CONFIG) LOAD_WARN.push('data/config.js did not load, so built-in defaults are in use.');
+if (!window.MB_MISSIONS || !window.MB_MISSIONS.length) LOAD_WARN.push('data/missions.js did not load or is empty, so there are no missions.');
+const CFG = Object.assign({brand:{},theme:{},apiBase:null,segments:[],tiers:[],rewards:[],categories:{}}, window.MB_CONFIG||{});
+const DEFAULT_TIERS = [{id:'rookie',name:'Rookie',min:0},{id:'contributor',name:'Contributor',min:100},{id:'champion',name:'Champion',min:300},{id:'trailblazer',name:'Trailblazer',min:600}];
+if (!CFG.tiers || !CFG.tiers.length) CFG.tiers = DEFAULT_TIERS;
+if (!Array.isArray(CFG.rewards)) CFG.rewards = [];
+if (!Array.isArray(CFG.segments)) CFG.segments = [];
+CFG.brand = Object.assign({name:'Community missions',tagline:'',logoUrl:'',watermarkUrl:'',hubUrl:''}, CFG.brand||{});
+CFG.categories = CFG.categories || {};
+const Q = new URLSearchParams(location.search);
+const EMBED = Q.get('embed') === '1';
+const KEY = 'mission-board.v2';
+const ME = 'me';
+const $ = s => document.querySelector(s);
+const esc = s => String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const safeUrl = u => /^https?:\/\//i.test(u||'') ? u : null;
+const normalizeUrl = v => { v = (v||'').trim(); if (!v || safeUrl(v)) return v; return (/^[\w-]+(\.[\w-]+)+(\/\S*)?$/.test(v)) ? 'https://'+v : v; };
+function formError(f,msg,field){
+  const el = f.querySelector('.errmsg'); if (el) { el.textContent = msg; el.hidden = false; }
+  if (field) { field.setAttribute('aria-invalid','true'); field.focus(); }
+}
+const fmtDate = d => new Date(d+'T12:00:00').toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'});
+const fmtTs = t => new Date(t).toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'});
+const uid = () => Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const slug = s => String(s).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,40) || uid();
+const num = n => Number(n||0).toLocaleString();
+const catStyle = c => Object.assign({from:'#1c1e61',to:'#4146e0'}, CFG.categories[c]||{});
+const ICONS = {
+  survey:'<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h3"/>',
+  task:'<circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/>',
+  link:'<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',
+  star:'<path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>',
+  bolt:'<path d="M13 2 4 14h7l-1 8 9-12h-7z"/>',
+  gift:'<rect x="3" y="8" width="18" height="4" rx="1"/><path d="M5 12v9h14v-9M12 8v13M12 8c-2 0-4-1-4-3s3-2 4 1c1-3 4-3 4-1s-2 3-4 3z"/>',
+  medal:'<circle cx="12" cy="9" r="6"/><path d="m8.5 14-1.5 7 5-3 5 3-1.5-7"/>',
+  pin:'<path d="M12 17v5M9 3h6l-1 6 3 3v2H7v-2l3-3z"/>',
+  image:'<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m21 17-5-5-9 8"/>'
+};
+function icon(name,size){ const px = {sm:14,lg:28}[size]||22; return `<svg class="ic" viewBox="0 0 24 24" width="${px}" height="${px}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[name]||ICONS.star}</svg>`; }
+const missionIconName = m => ({survey:'survey',attest:'task',event:'bolt',proof:m.kind==='Submit Review'?'star':'link'})[m.type] || 'task';
+function missionTile(m,cls){
+  const cs = catStyle(m.category||''), c = 'tile'+(cls?' '+cls:'');
+  return m.image ? `<span class="${c}"><img src="${esc(m.image)}" alt=""></span>`
+    : `<span class="${c}" style="background:linear-gradient(135deg,${esc(cs.from)},${esc(cs.to)})" aria-hidden="true">${icon(missionIconName(m))}</span>`;
+}
+const imgOrIcon = (src,name,size) => src ? `<img src="${esc(src)}" alt="">` : icon(name,size);
+const badgeImg = b => `<div class="bimg" aria-hidden="true">${imgOrIcon(b.image,'medal','lg')}</div>`;
+
+/* image upload: resized in the browser (max 640px, WebP) so it stays small */
+function loadImage(file){ return new Promise((res,rej)=>{ const url = URL.createObjectURL(file), img = new Image(); img.onload=()=>{URL.revokeObjectURL(url);res(img);}; img.onerror=()=>{URL.revokeObjectURL(url);rej(new Error('That image could not be read. Try a PNG or JPG.'));}; img.src=url; }); }
+async function processImage(file){
+  if (!/^image\//.test(file.type)) throw new Error('Choose an image file: PNG, JPG, WebP, GIF or SVG.');
+  if (file.size > 10*1024*1024) throw new Error('That image is over 10 MB. Choose a smaller one.');
+  const img = await loadImage(file);
+  const w0 = img.naturalWidth || 512, h0 = img.naturalHeight || 512;
+  let max = 640, q = .85, out = '';
+  for (let i=0;i<4;i++) {
+    const sc = Math.min(1, max/Math.max(w0,h0)), c = document.createElement('canvas');
+    c.width = Math.max(1,Math.round(w0*sc)); c.height = Math.max(1,Math.round(h0*sc));
+    c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+    out = c.toDataURL('image/webp',q); if (!out.startsWith('data:image/webp')) out = c.toDataURL('image/png');
+    if (out.length < 260000) break; max = Math.round(max*.75); q = Math.max(.5,q-.1);
+  }
+  return out;
+}
+function uploader(kind,img,shape){
+  return `<div class="uploader" data-up="${kind}"><div class="uprev ${shape||''}">${img?`<img src="${esc(img)}" alt="Current image">`:icon('image','lg')}</div>
+    <div><label class="btn ghost sm" style="cursor:pointer">${img?'Replace image':'Upload image'}<input type="file" accept="image/*" data-up="${kind}" class="sr"></label>
+    <button type="button" class="btn ghost sm" data-act="rmImage" data-kind="${kind}" ${img?'':'disabled'}>Remove</button>
+    <p class="hint">PNG, JPG, WebP, GIF or SVG. We resize it for you. You can also drag a file onto this box.</p></div></div>`;
+}
+const firstSentence = t => { const m = String(t||'').match(/^.*?[.!?](\s|$)/); return (m?m[0]:String(t||'')).trim(); };
+const linkify = t => esc(t).replace(/(https?:\/\/[^\s<]+)/g,'<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>');
+const logoImg = cls => CFG.brand.logoUrl ? `<img class="${cls}" src="${esc(CFG.brand.logoUrl)}" alt="Momentus" onerror="this.remove()">` : '';
+const themeMap = {ink:'--ink',primary:'--primary',violet:'--violet',accent:'--accent',page:'--page',text:'--text',meta:'--meta',border:'--border',divider:'--divider'};
+Object.entries(CFG.theme||{}).forEach(([k,v])=>{ if(themeMap[k]) document.documentElement.style.setProperty(themeMap[k],v); });
+document.title = CFG.brand.name;
+if (EMBED) document.body.classList.add('embed');
+
+/* ---------- state ---------- */
+let S = null, seeding = false;
+const UI = {role:'member',tab:'missions',cat:'all',status:'all',adminTab:'overview',incTab:'rewards',incPending:false,
+  chooser:false,sel:[],declining:null,subs:null,subTab:'content',subQ:'',mq:'',mStatus:'all',draft:null,step:1,rdraft:null,bdraft:null};
+try { S = JSON.parse(localStorage.getItem(KEY)); } catch(e) { S = null; }
+const valid = x => x && x.v===2 && x.people && x.people.me && ['missions','ledger','rewards','badges','badgeAwards','tiers','redemptions'].every(k=>Array.isArray(x[k])) && x.tiers.length;
+function boot(){
+  if (!valid(S)) S = seed();
+  S.meSegments = S.meSegments || [];
+  CFG.tiers = S.tiers;
+  if (Q.get('segments')) S.meSegments = Q.get('segments').split(',').map(s=>s.trim()).filter(Boolean);
+  if (Q.get('name') && S.people[ME]) S.people[ME].name = Q.get('name');
+}
+let quotaWarned = false;
+const persist = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e) { if (!quotaWarned) { quotaWarned = true; toast('Browser storage is full, so recent changes may not be saved. Remove some images or reset the demo data.'); } } };
+
+const visMode = m => m.visibility || ((m.audience||['All']).includes('All') ? 'registered' : 'segments');
+const KIND = {survey:'Complete Survey',attest:'Custom Task',event:'Custom Task',proof:'Submit Proof'};
+const kindOf = m => m.kind || KIND[m.type] || 'Custom Task';
+
+function newQ(){ return {id:'q'+uid().slice(-4),type:'checkbox',text:'',options:['Option 1'],required:true,logic:null}; }
+
+function seed(){
+  seeding = true;
+  const missions = JSON.parse(JSON.stringify(window.MB_MISSIONS||[]));
+  missions.forEach(m=>{ if(m.active==null) m.active=true; });
+  const people = {me:{name:'You'},m1:{name:'Avery Chen'},m2:{name:'Jordan Ellis'},m3:{name:'Sam Okafor'},m4:{name:'Riley Brooks'},m5:{name:'Casey Nguyen'}};
+  const now = Date.now(), day = 864e5, ledger = []; let n = 1;
+  const pts = id => (missions.find(m=>m.id===id)||{points:10}).points;
+  const add = (mem,mid,status,ago,proof,answers) => ledger.push({id:'e'+(n++),ts:now-ago*day,memberId:mem,missionId:mid,status,points:pts(mid),proof:proof||'',answers:answers||null,reason:'',decidedAt:status==='pending'?null:now-(ago-0.3)*day});
+  ['avatar','intro'].forEach((id,i)=>add(ME,id,'awarded',9-i));
+  add(ME,'forum-product','awarded',7,'',{q1:['Enterprise','Analytics'],q2:['Enterprise']});
+  add('m1','avatar','awarded',20); add('m1','g2','awarded',12,'https://www.g2.com/products/example/reviews/1'); add('m1','capterra','awarded',11,'https://www.capterra.com/reviews/example'); add('m1','refer','awarded',8,'Dana Whitfield, Northwind, dana@example.com'); add('m1','li-share','awarded',6,'https://www.linkedin.com/posts/example-1');
+  add('m2','train-access','awarded',14); add('m2','functions-pro','awarded',10); add('m2','forum-product','awarded',15,'',{q1:['Elite'],q2:['Elite']}); add('m2','tip','awarded',5,'https://example.com/community/tip-1');
+  add('m3','intro','awarded',16); add('m3','forum-vertical','awarded',16,'',{q1:['Enterprise'],q2:['Corporate','Stadiums & Arenas']}); add('m3','dash-build','awarded',7,'',{q1:true,q2:true});
+  add('m4','li-follow','pending',1,'https://www.linkedin.com/in/example-riley'); add('m4','li-repost','pending',1,'https://www.linkedin.com/feed/update/example-2');
+  add('m5','g2','pending',2,'https://www.g2.com/products/example/reviews/2'); add('m5','beta-enterprise','pending',1,''); add('m3','dash-style','pending',3,'');
+  const tiers = JSON.parse(JSON.stringify(CFG.tiers));
+  const kindType = k => /physical/i.test(k) ? 'physical' : 'digital';
+  const rewards = (CFG.rewards||[]).map(r=>({id:r.id,title:r.title,description:r.description||({gc10:'Delivered by email within a few days.',swag:'Shipped to your address.',roadmap:'A live session with the product team.',pass:'Savings on your next conference registration.'})[r.id]||'',type:kindType(r.kind),image:r.image||'',cost:r.cost,tier:r.tier||null,active:true,createdAt:now-(r.id==='pass'?3:40)*day}));
+  const badges = [
+    {id:'explorer',name:'Explorer',image:'',description:"You're just getting started. Joining forums and discovering resources is the first step.",how:{type:'mission',value:'forum-product'},visibility:'public',active:true},
+    {id:'innovator',name:'Innovator',image:'',description:'You spark new ideas and share what you know.',how:{type:'points',value:100},visibility:'public',active:true},
+    {id:'visionary',name:'Visionary',image:'',description:'You lead the way with big-picture contributions.',how:{type:'points',value:300},visibility:'public',active:true},
+    {id:'founding',name:'Founding member',image:'',description:'Awarded to the first members of the community.',how:{type:'manual',value:''},visibility:'public',active:true},
+    {id:'advocate',name:'Advocate',image:'',description:'A trusted voice who reviews and refers.',how:{type:'mission',value:'g2'},visibility:'public',active:true},
+    {id:'spotlight',name:'Member spotlight award',image:'',description:'Recognized by the team for outstanding contributions.',how:{type:'manual',value:''},visibility:'private',active:true}
+  ];
+  S = {v:2,missions,ledger,redemptions:[],people,meSegments:['Enterprise','Analytics'],rewards,badges,badgeAwards:[],tiers};
+  Object.keys(people).forEach(id=>checkBadges(id));
+  S.badgeAwards.push({memberId:'m1',badgeId:'founding',ts:now-30*day},{memberId:'m2',badgeId:'founding',ts:now-30*day});
+  seeding = false;
+  return S;
+}
+
+/* ---------- domain logic ---------- */
+const byId = id => S.missions.find(m=>m.id===id);
+const nameOf = id => ((S.people||{})[id]||{name:id}).name;
+const lifetime = mem => S.ledger.filter(e=>e.memberId===mem&&e.status==='awarded').reduce((a,e)=>a+e.points,0);
+const spent = mem => S.redemptions.filter(r=>r.memberId===mem&&r.status!=='declined').reduce((a,r)=>a+r.cost,0);
+const tierFor = p => S.tiers.reduce((t,x)=>p>=x.min?x:t, S.tiers[0]) || {id:'',name:'Member',min:0};
+const tierIdx = id => S.tiers.findIndex(t=>t.id===id);
+const visible = m => m.active!==false && !(m.start && Date.parse(m.start)>Date.now()) && (visMode(m)!=='segments' || (m.audience||[]).some(a=>S.meSegments.includes(a)));
+const active = e => e.status !== 'rejected';
+const needsReview = m => m.type==='proof' || !!m.approval;
+const earnedBadge = (mem,id) => S.badgeAwards.some(x=>x.memberId===mem&&x.badgeId===id);
+
+function avail(m){
+  const mine = S.ledger.filter(e=>e.memberId===ME&&e.missionId===m.id&&active(e));
+  if (mine.filter(e=>e.status==='awarded').length >= (m.limit||1)) return 'done';
+  if (mine.some(e=>e.status==='pending')) return 'pending';
+  if (m.ends && Date.parse(m.ends+'T23:59:59') < Date.now()) return 'ended';
+  if (m.cap && S.ledger.filter(e=>e.missionId===m.id&&active(e)).length >= m.cap) return 'full';
+  return m.type==='event' ? 'auto' : 'open';
+}
+
+function checkBadges(mem){
+  const pts = lifetime(mem), ti = tierIdx(tierFor(pts).id);
+  (S.badges||[]).filter(b=>b.active).forEach(b=>{
+    if (earnedBadge(mem,b.id)) return;
+    const h = b.how||{type:'manual'}; let ok = false;
+    if (h.type==='mission') ok = S.ledger.some(e=>e.memberId===mem&&e.missionId===h.value&&e.status==='awarded');
+    else if (h.type==='points') ok = pts >= +h.value;
+    else if (h.type==='level') ok = tierIdx(h.value) >= 0 && ti >= tierIdx(h.value);
+    if (ok) {
+      S.badgeAwards.push({memberId:mem,badgeId:b.id,ts:Date.now()});
+      if (!seeding) { emit('badge.awarded',{member:{id:mem,name:nameOf(mem)},badge:b}); if (mem===ME) toast('Badge earned: '+b.name); }
+    }
+  });
+}
+
+function emit(type,payload){
+  const evt = Object.assign({source:'mission-board',type,ts:new Date().toISOString()},payload);
+  try { if (window.parent !== window) window.parent.postMessage(evt,'*'); } catch(e){}
+  if (CFG.apiBase) {
+    fetch(CFG.apiBase.replace(/\/$/,'')+'/events',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(evt),keepalive:true})
+      .catch(()=>toast('Could not reach the award service. The event is saved in this browser only.'));
+  }
+}
+function award(e){ emit('award.granted',{entry:e,member:{id:e.memberId,name:nameOf(e.memberId)},mission:byId(e.missionId),idempotencyKey:e.id}); checkBadges(e.memberId); persist(); }
+
+function submit(m,proof,source,answers){
+  const review = source==='system' ? false : needsReview(m);
+  const e = {id:'e'+uid(),ts:Date.now(),memberId:ME,missionId:m.id,status:review?'pending':'awarded',points:m.points,proof:proof||'',answers:answers||null,reason:'',decidedAt:review?null:Date.now()};
+  if (source) e.source = source;
+  S.ledger.push(e); persist();
+  emit('submission.created',{entry:e,member:{id:ME,name:nameOf(ME)},mission:m});
+  if (!review) award(e);
+  return e;
+}
+function decide(id,status,reason){
+  const e = S.ledger.find(x=>x.id===id); if (!e) return;
+  e.status = status; e.reason = reason||''; e.decidedAt = Date.now(); persist();
+  emit(status==='awarded'?'submission.approved':'submission.rejected',{entry:e,member:{id:e.memberId,name:nameOf(e.memberId)},mission:byId(e.missionId)});
+  if (status==='awarded') award(e);
+}
+function redeem(rid){
+  const r = S.rewards.find(x=>x.id===rid); if (!r) return;
+  const pts = lifetime(ME), bal = pts - spent(ME);
+  if (bal < r.cost) return toast('Not enough points yet.');
+  if (r.tier && tierIdx(tierFor(pts).id) < tierIdx(r.tier)) return toast('This reward unlocks at a higher tier.');
+  const rec = {id:'r'+uid(),ts:Date.now(),memberId:ME,rewardId:r.id,title:r.title,cost:r.cost,status:'requested'};
+  S.redemptions.push(rec); persist();
+  emit('redemption.requested',{redemption:rec,member:{id:ME,name:nameOf(ME)}});
+  toast("Reward requested. We'll be in touch to deliver it."); render();
+}
+
+/* survey helpers */
+function qShown(q,ans){
+  if (!q.logic || !q.logic.q) return true;
+  const a = ans[q.logic.q], v = String(q.logic.value||'').toLowerCase();
+  if (Array.isArray(a)) return a.some(x=>String(x).toLowerCase()===v);
+  if (typeof a === 'boolean') return a;
+  return String(a||'').toLowerCase().includes(v);
+}
+function readAnswers(form,m){
+  const ans = {};
+  (m.questions||[]).forEach(q=>{
+    const box = form.querySelector(`[data-qid="${q.id}"]`); if (!box) return;
+    if (q.type==='checkbox') ans[q.id] = [...box.querySelectorAll('input:checked')].map(i=>i.value);
+    else if (q.type==='single') { const c = box.querySelector('input:checked'); ans[q.id] = c ? c.value : ''; }
+    else if (q.type==='ack') ans[q.id] = !!box.querySelector('input:checked');
+    else ans[q.id] = (box.querySelector('textarea')||{}).value || '';
+  });
+  return ans;
+}
+function applyLogic(form){
+  const m = byId(form.dataset.id); if (!m) return;
+  const ans = readAnswers(form,m);
+  (m.questions||[]).forEach(q=>{ const box = form.querySelector(`[data-qid="${q.id}"]`); if (box) box.hidden = !qShown(q,ans); });
+}
+
+/* ---------- rendering: shell + member ---------- */
+const app = $('#app'), dlg = $('#dlg');
+window.addEventListener('error',e=>{ window.__mbErr = e.message; try { app.insertAdjacentHTML('afterbegin', warnBar()); } catch(x){} });
+
+function render(){
+  const role = EMBED ? 'member' : UI.role;
+  app.innerHTML = warnBar() + (EMBED?'':demoBar()) + `<div class="shell ${role==='admin'?'wide':''}"><div class="card">` + (role==='member' ? memberView() : adminView()) + (EMBED?'':footer()) + `</div></div>`;
+  if (EMBED && window.parent!==window) parent.postMessage({source:'mission-board',type:'resize',height:document.documentElement.scrollHeight},'*');
+}
+function warnBar(){
+  const w = LOAD_WARN.concat(window.__mbErr ? ['Something went wrong: '+window.__mbErr] : []);
+  return w.length ? `<div class="notice warn" role="alert" style="margin:12px auto;max-width:736px"><div>${w.map(esc).join(' ')} Check that the <code>data/</code> folder was published next to <code>index.html</code>.</div></div>` : '';
+}
+function footer(){
+  return `<footer class="ft">${logoImg('')}<p>Missions are part of your Momentus community experience.${CFG.brand.hubUrl?` <a href="${esc(CFG.brand.hubUrl)}">Back to the Customer Hub →</a>`:''}</p><p class="copy">© ${new Date().getFullYear()} Momentus Technologies</p></footer>`;
+}
+function demoBar(){
+  return `<div class="demo"><div class="demo-in">
+    <div class="seg" role="group" aria-label="View as">
+      <button data-act="role" data-role="member" aria-pressed="${UI.role==='member'}">Member view</button>
+      <button data-act="role" data-role="admin" aria-pressed="${UI.role==='admin'}">Admin view</button>
+    </div>
+    <div class="segs" role="group" aria-label="Demo member segments"><span>Member belongs to</span>
+      ${CFG.segments.map(s=>`<label><input type="checkbox" data-act="seg" data-seg="${esc(s)}" ${S.meSegments.includes(s)?'checked':''}>${esc(s)}</label>`).join('')}
+    </div>
+    <span class="note">Demo data is saved in this browser only.</span>
+  </div></div>`;
+}
+function hero(){
+  const pts = lifetime(ME), bal = pts - spent(ME), t = tierFor(pts), tiers = S.tiers, top = tiers[tiers.length-1];
+  const next = tiers.find(x=>x.min>pts);
+  const head = next ? `You're a ${t.name}. ${next.min-pts} more points to reach ${next.name}.` : `You've reached ${t.name}, the top tier.`;
+  const n = Math.max(1,tiers.length - 1);
+  let pct = 100;
+  if (next) { const i = tiers.indexOf(next) - 1, lo = tiers[i]; pct = (i + (pts - lo.min) / (next.min - lo.min)) / n * 100; }
+  return `<header class="hd ${CFG.brand.logoUrl?'':'nologo'}">
+    ${CFG.brand.watermarkUrl?`<img class="wm" src="${esc(CFG.brand.watermarkUrl)}" alt="" onerror="this.remove()">`:''}
+    ${logoImg('logo')}
+    <div class="kicker">${esc(CFG.brand.name)}</div>
+    <h1 class="hero">${esc(head)}</h1>
+    <p class="lead">${pts} lifetime points. ${esc(CFG.brand.tagline||'')}</p>
+    <div class="bal"><b>${bal}</b><span>points to spend</span></div>
+    <div class="track" role="img" aria-label="${pts} of ${top.min} points to the top tier">
+      <div class="fill" style="width:${pct}%"></div>
+      <ol>${tiers.map((x,i)=>`<li class="node ${pts>=x.min?'on':''} ${i===0?'first':''} ${i===tiers.length-1?'last':''}" style="left:${i/n*100}%"><span class="dot"></span><span class="nl">${esc(x.name)}<small>${x.min}</small></span></li>`).join('')}</ol>
+    </div>
+    <div class="pad"></div>
+  </header>`;
+}
+function tabs(list,cur,act){
+  return `<nav class="tabs" aria-label="Sections">${list.map(([id,label,count])=>`<button data-act="${act}" data-tab="${id}" ${cur===id?'aria-current="page"':''}>${label}${count?`<span class="count">${count}</span>`:''}</button>`).join('')}</nav>`;
+}
+function memberView(){
+  const list = [['missions','Missions'],['rewards','Rewards'],['board','Leaderboard'],['activity','My activity']];
+  const body = ({missions:missionsPanel,rewards:rewardsPanel,board:boardPanel,activity:activityPanel})[UI.tab]();
+  return hero() + tabs(list,UI.tab,'tab') + `<div class="body">${body}</div>`;
+}
+function statusChip(st){
+  return ({done:'<span class="chip ok">Completed</span>',pending:'<span class="chip wait">In review</span>',ended:'<span class="chip mute">Ended</span>',full:'<span class="chip mute">Fully claimed</span>'})[st]||'';
+}
+function upNext(){
+  const pts = lifetime(ME), bal = pts - spent(ME);
+  const open = S.missions.filter(visible).filter(m=>avail(m)==='open').sort((a,b)=>{ const ea=a.ends?Date.parse(a.ends):9e15, eb=b.ends?Date.parse(b.ends):9e15; return ea-eb || b.points-a.points; }).slice(0,3);
+  const rs = S.rewards.filter(r=>r.active!==false).sort((a,b)=>a.cost-b.cost);
+  const next = rs.find(r=>r.cost>bal), canNow = rs.filter(r=>r.cost<=bal).pop();
+  const prog = next ? `<div class="rprog"><div><b>${canNow?`You can redeem ${esc(canNow.title)}. `:''}Next reward: ${esc(next.title)}</b><div class="m hint">${num(next.cost-bal)} more points to go</div></div><div class="bar wide"><i style="width:${Math.min(100,bal/next.cost*100)}%"></i></div></div>`
+    : canNow ? `<div class="rprog"><div><b>You can redeem ${esc(canNow.title)}.</b></div><button class="btn sm" data-act="tab" data-tab="rewards">See rewards</button></div>` : '';
+  if (!open.length && !prog) return '';
+  return `<section class="upnext"><h2 class="sec-h">Up next</h2>${open.length?`<div class="upgrid">${open.map(m=>{const cs=catStyle(m.category);return `<button class="upcard" data-act="open" data-id="${esc(m.id)}">${missionTile(m,'sm')}<span class="ibody"><span class="ititle">${esc(m.title)}</span><span class="imeta"><span>${m.ends?'Ends '+fmtDate(m.ends):'Any time'}</span></span></span><span class="pts">+${m.points}</span></button>`;}).join('')}</div>`:''}${prog}</section>`;
+}
+function missionsPanel(){
+  const all = S.missions.filter(visible).sort((a,b)=>(b.pinned?1:0)-(a.pinned?1:0));
+  const cats = [...new Set(all.map(m=>m.category))];
+  let rows = all.filter(m=>UI.cat==='all'||m.category===UI.cat);
+  rows = rows.filter(m=>{const a=avail(m); return UI.status==='all' || (UI.status==='todo'&&(a==='open'||a==='auto')) || (UI.status==='review'&&a==='pending') || (UI.status==='done'&&a==='done');});
+  const groups = [...new Set(rows.map(m=>m.category))];
+  const pill = (act,val,label,cur) => `<button class="pill" data-act="${act}" data-v="${esc(val)}" aria-pressed="${cur===val}">${esc(label)}</button>`;
+  return upNext() + `<div class="filters">
+    <div class="pills" role="group" aria-label="Category">${pill('cat','all','All categories',UI.cat)}${cats.map(c=>pill('cat',c,c,UI.cat)).join('')}</div>
+    <div class="pills" role="group" aria-label="Status">${pill('status','all','Any status',UI.status)}${pill('status','todo','To do',UI.status)}${pill('status','review','In review',UI.status)}${pill('status','done','Completed',UI.status)}</div>
+  </div>` + (groups.length ? groups.map(g=>`<section class="group"><h2>${esc(g)}</h2>${rows.filter(m=>m.category===g).map(missionRow).join('')}</section>`).join('') : `<p class="empty">No missions match these filters. Try another category or status.</p>`);
+}
+function missionRow(m){
+  const st = avail(m), left = m.cap ? Math.max(0,m.cap-S.ledger.filter(e=>e.missionId===m.id&&active(e)).length) : null, cs = catStyle(m.category);
+  const meta = [];
+  if (visMode(m)==='segments') meta.push(`<span>${esc((m.audience||[]).join(', '))}</span>`);
+  meta.push(`<span>${m.ends?'Ends '+fmtDate(m.ends):'Evergreen'}</span>`);
+  if ((m.limit||1)>1) meta.push(`<span>Earn up to ${m.limit} times</span>`);
+  if (left!==null && left<=500) meta.push(`<span>${left} spots left</span>`);
+  const side = st==='open' ? '<span class="cta">Start mission →</span>' : st==='auto' ? '<span class="cta">See how it works →</span>' : statusChip(st);
+  return `<button class="item" data-act="open" data-id="${esc(m.id)}">
+    ${missionTile(m)}
+    <span class="ibody"><span class="ititle">${m.pinned?icon('pin','sm')+' ':''}${esc(m.title)}</span><span class="isub">${esc(firstSentence(m.description))}</span><span class="imeta">${meta.join('')}</span></span>
+    <span class="iside"><span class="pts">+${m.points}</span>${side}</span></button>`;
+}
+
+function rewardsPanel(){
+  const pts = lifetime(ME), bal = pts - spent(ME), t = tierFor(pts);
+  const rs = S.rewards.filter(r=>r.active!==false);
+  const mine = S.redemptions.filter(r=>r.memberId===ME).slice().reverse();
+  const bs = S.badges.filter(b=>b.active&&(b.visibility!=='private'||earnedBadge(ME,b.id)));
+  const card = r => {
+    const locked = r.tier && tierIdx(t.id) < tierIdx(r.tier), short = bal < r.cost;
+    const tn = r.tier ? (S.tiers[tierIdx(r.tier)]||{name:r.tier}).name : '';
+    const isNew = Date.now()-(r.createdAt||0) < 14*864e5;
+    return `<article class="rcard"><div class="rimg">${isNew?'<span class="newtag">New</span>':''}${imgOrIcon(r.image,'gift','lg')}</div>
+      <h3>${esc(r.title)}</h3><p class="m">${esc(r.type==='physical'?'Ships to your address':'Delivered by email')}${r.tier?`. Unlocks at ${esc(tn)}.`:''}</p><p>${esc(r.description||'')}</p>
+      <div class="rfoot"><span class="pts">${num(r.cost)} points</span><button class="btn" data-act="redeem" data-id="${esc(r.id)}" ${locked||short?'disabled':''}>${locked?'Locked':'Redeem'}</button></div>
+      ${short&&!locked?`<p class="hint">You have ${num(r.cost-bal)} points left until you can redeem this reward.</p>`:''}</article>`;
+  };
+  return `<p class="hint" style="margin:0 0 10px">Spending points never lowers your tier. Tiers follow lifetime points.</p>
+  ${rs.length?`<div class="cardgrid">${rs.map(card).join('')}</div>`:'<p class="empty">No rewards are available right now. Check back soon.</p>'}
+  <h2 class="sec-h" style="margin-top:28px">Your badges</h2>
+  ${bs.length?`<div class="cardgrid sm">${bs.map(b=>{const got=earnedBadge(ME,b.id);return `<article class="bcard ${got?'':'off'}">${badgeImg(b)}<h3>${esc(b.name)}</h3><p class="m">${esc(b.description)}</p><span class="chip ${got?'ok':''}">${got?'Earned':esc(howText(b))}</span></article>`;}).join('')}</div>`:'<p class="empty">Badges you can earn will show up here.</p>'}
+  <h2 class="sec-h" style="margin-top:28px">Your requests</h2>
+  ${mine.length?`<ul class="list">${mine.map(r=>`<li><div class="grow"><div class="t">${esc(r.title)}</div><div class="m">Requested ${fmtTs(r.ts)}</div></div><span class="chip ${r.status==='fulfilled'?'ok':r.status==='declined'?'bad':'wait'}">${r.status==='fulfilled'?'Delivered':r.status==='declined'?'Declined':'Requested'}</span></li>`).join('')}</ul>`:'<p class="empty">No requests yet. Pick a reward above when you have enough points.</p>'}`;
+}
+function howText(b){
+  const h = b.how||{};
+  if (h.type==='mission') return 'Complete: '+((byId(h.value)||{}).title||'a mission');
+  if (h.type==='points') return 'Reach '+num(h.value)+' points';
+  if (h.type==='level') return 'Reach '+((S.tiers[tierIdx(h.value)]||{}).name||'a level');
+  return 'Awarded by the team';
+}
+function boardPanel(){
+  const ids = Object.keys(S.people).map(id=>({id,pts:lifetime(id)})).filter(x=>x.pts>0).sort((a,b)=>b.pts-a.pts).slice(0,10);
+  return ids.length ? `<ul class="list">${ids.map((x,i)=>`<li class="${x.id===ME?'me':''}"><div class="rank grow"><span class="n">${i+1}</span><div><div class="t">${esc(nameOf(x.id))}</div><div class="m">${esc(tierFor(x.pts).name)}</div></div></div><span class="pts">${x.pts}</span></li>`).join('')}</ul>` : '<p class="empty">No points earned yet. Complete a mission to appear here.</p>';
+}
+function activityPanel(){
+  const mine = S.ledger.filter(e=>e.memberId===ME).slice().reverse();
+  return mine.length ? `<ul class="list">${mine.map(e=>{const m=byId(e.missionId)||{title:e.missionId};
+    const chip = e.status==='awarded'?'<span class="chip ok">Points added</span>':e.status==='pending'?'<span class="chip wait">In review</span>':'<span class="chip bad">Not approved</span>';
+    return `<li><div class="grow"><div class="t">${esc(m.title)}</div><div class="m">${fmtTs(e.ts)}${e.status==='rejected'&&e.reason?` &nbsp; ${esc(e.reason)}`:''}</div></div><span class="pts">${e.status==='awarded'?'+':''}${e.points}</span>${chip}</li>`;}).join('')}</ul>` : '<p class="empty">Nothing here yet. Open a mission to get started.</p>';
+}
+
+/* ---------- rendering: admin ---------- */
+function adminView(){
+  const pend = S.ledger.filter(e=>e.status==='pending').length, reqs = S.redemptions.filter(r=>r.status==='requested').length;
+  const list = [['overview','Overview'],['missions','Missions'],['approvals','Approvals',pend],['incentives','Incentives',reqs],['ledger','Ledger'],['settings','Settings']];
+  let body;
+  if (UI.adminTab==='missions' && UI.chooser) body = chooser();
+  else if (UI.adminTab==='missions' && UI.draft) body = editor();
+  else if (UI.adminTab==='missions' && UI.subs) body = submissionsPanel();
+  else body = ({overview:overviewPanel,missions:missionsAdmin,approvals:approvalsPanel,incentives:incentivesPanel,ledger:ledgerPanel,settings:settingsPanel})[UI.adminTab]();
+  return `<header class="hd admin">${CFG.brand.watermarkUrl?`<img class="wm" src="${esc(CFG.brand.watermarkUrl)}" alt="" onerror="this.remove()">`:''}${logoImg('logo')}<div class="kicker">${esc(CFG.brand.name)}</div><h1 class="hero">Admin console</h1><p class="lead">Create missions, review submissions, and manage rewards and badges.</p></header>
+  ${tabs(list,UI.adminTab,'atab')}<div class="body">${body}</div>`;
+}
+function proofHtml(e){
+  if (!e.proof) return e.answers ? '<span class="m">Survey answers attached</span>' : '<span class="m">No proof attached</span>';
+  const u = safeUrl(e.proof);
+  return u ? `<a href="${esc(u)}" target="_blank" rel="noopener noreferrer">${esc(e.proof)}</a>` : esc(e.proof);
+}
+function approvalsPanel(){
+  const q = S.ledger.filter(e=>e.status==='pending').sort((a,b)=>a.ts-b.ts);
+  UI.sel = (UI.sel||[]).filter(id=>q.some(e=>e.id===id));
+  if (!q.length) return '<p class="empty">The queue is clear. New submissions will appear here.</p>';
+  return `<div class="toolbar"><label class="check2"><input type="checkbox" data-act="selAll" ${UI.sel.length===q.length?'checked':''}> Select all</label><span class="sp"></span>
+    <button class="btn" data-act="approveSel" ${UI.sel.length?'':'disabled'}>Approve selected${UI.sel.length?` (${UI.sel.length})`:''}</button></div>
+  <ul class="list">${q.map(e=>{const m=byId(e.missionId)||{title:e.missionId};
+    return `<li><label class="check2"><input type="checkbox" data-act="selApr" data-id="${esc(e.id)}" ${UI.sel.includes(e.id)?'checked':''} aria-label="Select ${esc(nameOf(e.memberId))}, ${esc(m.title)}"></label>
+    <div class="grow"><div class="t">${esc(m.title)}</div><div class="m">${esc(nameOf(e.memberId))}, submitted ${fmtTs(e.ts)}</div><div class="m">${proofHtml(e)}</div>
+      ${UI.declining===e.id?`<div class="inline" style="margin-top:8px"><input type="text" id="why-${esc(e.id)}" placeholder="Tell the member what to fix" aria-label="Reason" style="max-width:300px"><button class="btn sm danger" data-act="rejectConfirm" data-id="${esc(e.id)}">Confirm decline</button><button class="btn ghost sm" data-act="cancelDecline">Cancel</button></div>`:''}</div>
+    <span class="pts">+${e.points}</span>
+    ${UI.declining===e.id?'':`<div class="inline"><button class="btn sm" data-act="approve" data-id="${esc(e.id)}">Approve</button><button class="btn sm danger" data-act="reject" data-id="${esc(e.id)}">Decline</button></div>`}</li>`;}).join('')}</ul>`;
+}
+
+/* overview */
+function overviewPanel(){
+  const now = Date.now(), d30 = now - 30*864e5;
+  const pend = S.ledger.filter(e=>e.status==='pending').length, reqs = S.redemptions.filter(r=>r.status==='requested').length;
+  const drafts = S.missions.filter(m=>m.active===false).length;
+  const soon = S.missions.filter(m=>m.active!==false && m.ends && Date.parse(m.ends+'T23:59:59')>now && Date.parse(m.ends+'T23:59:59')<now+14*864e5);
+  const recent = S.ledger.filter(e=>e.status==='awarded' && e.ts>=d30);
+  const pts = recent.reduce((a,e)=>a+e.points,0), people = new Set(S.ledger.filter(e=>e.ts>=d30).map(e=>e.memberId)).size;
+  const counts = {}; S.ledger.filter(e=>e.status==='awarded').forEach(e=>counts[e.missionId]=(counts[e.missionId]||0)+1);
+  const top = Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,5), max = top.length?top[0][1]:1;
+  const todo = [];
+  if (pend) todo.push([`${pend} ${pend===1?'submission is':'submissions are'} waiting for review`,'Review','approvals']);
+  if (reqs) todo.push([`${reqs} reward ${reqs===1?'request needs':'requests need'} delivery`,'Open requests','incentives']);
+  soon.forEach(m=>todo.push([`${m.title} ends ${fmtDate(m.ends)}`,'Edit mission','missions',m.id]));
+  if (drafts) todo.push([`${drafts} ${drafts===1?'mission is':'missions are'} still a draft`,'See drafts','missions']);
+  return `<div class="toolbar"><h2 class="sec-h" style="margin:0">Needs your attention</h2><span class="sp"></span><button class="btn" data-act="newMission">New mission</button></div>
+  ${todo.length?`<ul class="list">${todo.map(([t,b,tab,id])=>`<li><div class="grow t">${esc(t)}</div><button class="btn ghost sm" data-act="${id?'editMission':'ovGo'}" data-tab="${tab}" ${id?`data-id="${esc(id)}"`:''}>${b}</button></li>`).join('')}</ul>`:'<p class="notice">You\'re all caught up. Nothing is waiting on you.</p>'}
+  <h2 class="sec-h" style="margin-top:26px">Last 30 days</h2>
+  <div class="statcards three"><div class="stat"><b>${num(pts)}</b><span>Points awarded</span></div><div class="stat"><b>${recent.length}</b><span>Missions completed</span></div><div class="stat"><b>${people}</b><span>Active members</span></div></div>
+  <h2 class="sec-h" style="margin-top:22px">Most completed missions</h2>
+  ${top.length?`<ul class="list">${top.map(([id,n])=>`<li><div class="grow"><div class="t">${esc((byId(id)||{title:id}).title)}</div><div class="bar wide"><i style="width:${n/max*100}%"></i></div></div><b>${n}</b></li>`).join('')}</ul>`:'<p class="empty">Completions will show up here.</p>'}`;
+}
+
+/* missions table */
+function audienceText(m){ const v = visMode(m); return v==='segments' ? (m.audience||[]).join(', ') : v==='anyone' ? 'Anyone' : 'All members'; }
+function missionAdminRow(m){
+  const cs = catStyle(m.category), done = S.ledger.filter(e=>e.missionId===m.id&&e.status==='awarded').length, n = S.ledger.filter(e=>e.missionId===m.id&&active(e)).length;
+  const typeLine = kindOf(m) + (m.type==='survey'&&m.questions?`, ${m.questions.length} ${m.questions.length===1?'question':'questions'}`:'');
+  const ended = m.ends && Date.parse(m.ends+'T23:59:59') < Date.now();
+  return `<tr>
+    <td><div class="tcell">${missionTile(m,'sm')}<div><b>${m.pinned?icon('pin','sm')+' ':''}${esc(m.title)}</b><div class="m hint">${esc(m.category)}, ${esc(typeLine)}</div></div></div></td>
+    <td>${esc(audienceText(m))}</td>
+    <td><b>${done}</b>${m.cap?` of ${num(m.cap)}`:''}${m.budget?`<div class="bar"><i style="width:${Math.min(100,done*m.points/m.budget*100)}%"></i></div>`:''}</td>
+    <td>${m.ends?`<span class="${ended?'chip mute':''}">${ended?'Ended ':''}${fmtDate(m.ends)}</span>`:'<span class="m">No end</span>'}</td>
+    <td><button class="switch" role="switch" aria-checked="${m.active!==false}" data-act="toggleMission" data-id="${esc(m.id)}" aria-label="${esc(m.title)} is ${m.active!==false?'active':'a draft'}"><span></span></button><div class="m hint">${m.active!==false?'Active':'Draft'}</div></td>
+    <td><button class="btn ghost sm" data-act="viewSubs" data-id="${esc(m.id)}">Submissions (${n})</button></td>
+    <td><details class="menu"><summary aria-label="Options for ${esc(m.title)}">⋯</summary><div class="menu-pop">
+      <button data-act="editMission" data-id="${esc(m.id)}">Edit</button><button data-act="dupMission" data-id="${esc(m.id)}">Duplicate</button>
+      <button data-act="copyLink" data-id="${esc(m.id)}">Copy mission link</button><button data-act="pin" data-id="${esc(m.id)}">${m.pinned?'Unpin from top':'Pin to top'}</button>
+      <button class="bad" data-act="delMission" data-id="${esc(m.id)}">Delete</button></div></details></td></tr>`;
+}
+function missionRowsAdmin(){
+  const q = UI.mq.toLowerCase();
+  const rows = S.missions.filter(m=>(!q||(m.title+' '+m.category).toLowerCase().includes(q)) && (UI.mStatus==='all'||(UI.mStatus==='active'?m.active!==false:m.active===false)))
+    .sort((a,b)=>(b.pinned?1:0)-(a.pinned?1:0));
+  return rows.length ? rows.map(missionAdminRow).join('') : `<tr><td colspan="7" class="empty">No missions match. Clear the search or create a mission.</td></tr>`;
+}
+function missionsAdmin(){
+  const pend = S.ledger.filter(e=>e.status==='pending').length;
+  return `<div class="toolbar"><input type="search" id="mq" placeholder="Search missions" aria-label="Search missions" value="${esc(UI.mq)}">
+    <select id="mstatus" aria-label="Filter by status"><option value="all" ${UI.mStatus==='all'?'selected':''}>All missions</option><option value="active" ${UI.mStatus==='active'?'selected':''}>Active</option><option value="draft" ${UI.mStatus==='draft'?'selected':''}>Drafts</option></select>
+    <span class="sp"></span>
+    ${pend?`<button class="btn ghost" data-act="atab" data-tab="approvals">Review submissions (${pend})</button>`:''}
+    <button class="btn" data-act="newMission">New mission</button></div>
+  <div class="tablewrap"><table class="mt"><thead><tr><th>Mission</th><th>Audience</th><th>Completed</th><th>Ends</th><th>Status</th><th><span class="sr">Submissions</span></th><th><span class="sr">Options</span></th></tr></thead>
+  <tbody id="mbody">${missionRowsAdmin()}</tbody></table></div>
+  <div class="toolbar" style="margin-top:14px"><span class="sp"></span><button class="btn ghost sm" data-act="exportJson">Export missions</button>
+    <label class="btn ghost sm" style="cursor:pointer">Import missions<input type="file" accept="application/json" data-act="importJson" class="sr"></label></div>`;
+}
+
+/* submissions */
+function answerHtml(m,e){
+  if (!m || !m.questions || !e.answers) return e.proof ? `<div class="qa"><span class="qlabel">Proof</span><div>${proofHtml(e)}</div></div>` : '<p class="m">No answers recorded.</p>';
+  return m.questions.filter(q=>q.id in (e.answers||{})).map(q=>{
+    const a = e.answers[q.id], txt = Array.isArray(a) ? (a.length?a.join(', '):'No selection') : typeof a==='boolean' ? (a?'Confirmed':'Not confirmed') : (a||'No answer');
+    return `<div class="qa"><span class="qlabel">Question</span><div>${linkify(q.text)}</div><span class="ans">${esc(txt)}</span></div>`;
+  }).join('');
+}
+function submissionsPanel(){
+  const m = byId(UI.subs); if (!m) { UI.subs=null; return missionsAdmin(); }
+  const es = S.ledger.filter(e=>e.missionId===m.id&&active(e)).sort((a,b)=>b.ts-a.ts);
+  const doneIds = [...new Set(S.ledger.filter(e=>e.missionId===m.id&&e.status==='awarded').map(e=>e.memberId))];
+  const eligible = Object.keys(S.people).length, q = UI.subQ.toLowerCase();
+  const body = UI.subTab==='content'
+    ? (es.length ? `<div class="cardgrid">${es.map(e=>`<article class="scard"><header><span class="av">${esc(nameOf(e.memberId).slice(0,1))}</span><div><b>${esc(nameOf(e.memberId))}</b><div class="m">${fmtTs(e.ts)}</div></div><span class="chip ${e.status==='awarded'?'ok':'wait'}">${e.status==='awarded'?'Completed':'In review'}</span></header><div class="sbody">${answerHtml(m,e)}</div></article>`).join('')}</div>` : '<p class="empty">No submissions yet.</p>')
+    : `<div class="statcards"><div class="stat"><b>${doneIds.length}</b><span>Completed</span></div><div class="stat"><b>${Math.max(0,eligible-doneIds.length)}</b><span>Not completed</span></div></div>
+       <input type="search" id="subq" placeholder="Search users by name" aria-label="Search users by name" value="${esc(UI.subQ)}" style="max-width:320px;margin:6px 0 10px">
+       <h2 class="sec-h">Completed users (${doneIds.length}/${eligible})</h2>
+       <ul class="list" id="sublist">${subList(doneIds,q)}</ul>`;
+  return `<div class="toolbar"><h2 class="sec-h" style="margin:0">Submissions <span class="chip">${es.length} ${es.length===1?'post':'posts'}</span></h2><span class="sp"></span>
+    <button class="btn ghost" data-act="backMissions">Back to missions</button><button class="btn" data-act="exportSubs" data-id="${esc(m.id)}">Export CSV</button></div>
+  <p class="m hint" style="margin:-4px 0 10px">${esc(m.title)}</p>
+  <div class="subtabs" role="tablist"><button data-act="subTab" data-v="content" ${UI.subTab==='content'?'aria-current="page"':''}>Content</button><button data-act="subTab" data-v="data" ${UI.subTab==='data'?'aria-current="page"':''}>Data</button></div>${body}`;
+}
+function subList(ids,q){
+  const rows = ids.filter(id=>!q||nameOf(id).toLowerCase().includes(q));
+  return rows.length ? rows.map(id=>{const e=S.ledger.find(x=>x.memberId===id&&x.missionId===UI.subs&&x.status==='awarded');return `<li><div class="grow"><div class="t">${esc(nameOf(id))}</div><div class="m">Completed ${e?fmtTs(e.ts):''}</div></div><span class="chip ok">Completed</span></li>`;}).join('') : '<li class="m">No users match.</li>';
+}
+
+/* mission editor: template chooser + one-page form with live preview */
+const TEMPLATES = [
+  ['survey','Survey','Ask members questions and record their answers.','survey'],
+  ['task','Confirm a task','Members tell us they did something.','task'],
+  ['social','Submit a link','Members share a link to a post, profile, or other proof.','link'],
+  ['review','Submit a review','Members share a link to a review they wrote.','star'],
+  ['auto','Automatic','Completes from a system signal, like Learning Center activity.','bolt']
+];
+function templateDraft(id){ const d = blankDraft(); d.trigger = id; d.points = {survey:50,task:25,social:25,review:100,auto:25}[id]; if (id==='review') { d.category='Advocacy'; d.proof='url'; } return d; }
+function blankDraft(){ return {id:'',image:'',title:'',category:'Get started',trigger:'survey',visibility:'registered',audience:[],notify:false,intro:'',questions:[newQ()],description:'',points:50,limit:1,cap:'',budget:'',start:'',ends:'',active:true,approval:false,proof:'url',pinned:false}; }
+function draftFrom(m){
+  const trig = m.type==='survey'?'survey':m.type==='attest'?'task':m.type==='event'?'auto':(m.kind==='Submit Review'?'review':'social');
+  return Object.assign(blankDraft(),JSON.parse(JSON.stringify(m)),{trigger:trig,visibility:visMode(m),audience:(m.audience||[]).filter(a=>a!=='All'),cap:m.cap||'',budget:m.budget||'',start:m.start||'',ends:m.ends||'',questions:m.questions&&m.questions.length?JSON.parse(JSON.stringify(m.questions)):[newQ()],proof:m.proof||'url',intro:m.intro||''});
+}
+function draftToMission(d){
+  const t = {survey:{type:'survey',kind:'Complete Survey'},task:{type:'attest',kind:'Custom Task'},social:{type:'proof',kind:'Social Post'},review:{type:'proof',kind:'Submit Review',proof:'url'},auto:{type:'event',kind:'Custom Task'}}[d.trigger];
+  const m = Object.assign({}, d, t);
+  m.points = +d.points||0; m.limit = +d.limit||1; m.cap = d.cap?+d.cap:null; m.budget = d.budget?+d.budget:null;
+  m.start = d.start||null; m.ends = d.ends||null; m.audience = d.visibility==='segments' ? d.audience.slice() : ['All'];
+  if (d.trigger==='survey') { m.questions = d.questions.filter(q=>q.text.trim()); } else { delete m.questions; delete m.intro; }
+  if (d.trigger!=='social') { if (d.trigger!=='review') delete m.proof; }
+  delete m.trigger;
+  m.id = d.id || slug(d.title); if (!d.id && byId(m.id)) m.id += '-'+uid().slice(-3);
+  return m;
+}
+
+function chooser(){
+  return `<div class="toolbar"><h2 class="sec-h" style="margin:0">What kind of mission?</h2><span class="sp"></span><button class="btn ghost" data-act="editorCancel">Cancel</button></div>
+  <div class="typecards big">${TEMPLATES.map(([id,t,sub,em])=>`<button class="tcard" data-act="pickTemplate" data-v="${id}">${icon(em,'lg')}<b>${t}</b><small>${sub}</small></button>`).join('')}</div>
+  <h3 class="sub-h">Or start from an existing mission</h3>
+  <div class="inline"><select id="copyfrom" aria-label="Existing mission" style="max-width:360px">${S.missions.map(m=>`<option value="${esc(m.id)}">${esc(m.title)}</option>`).join('')}</select><button class="btn ghost" data-act="copyFrom">Copy it</button></div>`;
+}
+function editor(){
+  const d = UI.draft, editing = !!d.id;
+  return `<div class="toolbar"><h2 class="sec-h" style="margin:0">${editing?'Edit mission':'New mission'}</h2><span class="sp"></span><button class="btn ghost" data-act="editorCancel">Cancel</button><button class="btn ghost" data-act="editorSave" data-draft="1">Save as draft</button><button class="btn" data-act="editorSave">${editing&&byId(d.id)&&byId(d.id).active!==false?'Save changes':'Publish'}</button></div>
+  <div class="editor"><div class="emain">${editorForm(d)}</div>
+  <aside class="eprev"><div class="prevcard"><h3 class="sub-h" style="margin-top:0">What members see</h3><div id="preview">${previewHtml(d)}</div></div></aside></div>`;
+}
+function editorForm(d){
+  const cats = [...new Set(S.missions.map(m=>m.category).concat(Object.keys(CFG.categories)))];
+  const f = (k,label,extra='',type='text',val=d[k]) => `<div><label class="f" for="f-${k}">${label}</label><input id="f-${k}" data-f="${k}" type="${type}" value="${esc(val)}" ${extra}></div>`;
+  const vcard = (v,t,sub) => `<button class="tcard ${d.visibility===v?'sel':''}" data-act="draftSet" data-k="visibility" data-v="${v}"><b>${t}</b><small>${sub}</small></button>`;
+  const isSurvey = d.trigger==='survey';
+  return `<section class="sec"><h2 class="sec-h">Basics</h2>
+    <div class="grid2">${f('title','Title *','required placeholder="For example, Join your product forums"')}${f('category','Category *','list="catlist"')}</div>
+    <datalist id="catlist">${cats.map(c=>`<option value="${esc(c)}">`).join('')}</datalist>
+    <div class="grid2"><div><label class="f" for="f-trigger">Mission type</label><select id="f-trigger" data-f="trigger">${TEMPLATES.map(([id,t])=>`<option value="${id}" ${d.trigger===id?'selected':''}>${t}</option>`).join('')}</select></div><div></div></div>
+    <label class="f">Mission image (optional)</label>${uploader('mission',d.image,'')}<p class="hint">Shown on the mission list and at the top of the mission. Without one, members see a colored icon.</p></section>
+  ${isSurvey?surveySection(d):`<section class="sec"><h2 class="sec-h">What members do</h2><label class="f" for="f-description">Instructions *</label><textarea id="f-description" data-f="description" rows="4" placeholder="Say exactly what to do. The first sentence shows on the mission list.">${esc(d.description)}</textarea>
+    ${d.trigger==='social'?`<label class="f" for="f-proof">Members submit</label><select id="f-proof" data-f="proof"><option value="url" ${d.proof!=='text'?'selected':''}>A link</option><option value="text" ${d.proof==='text'?'selected':''}>Text details</option></select>`:''}
+    ${d.trigger==='task'?`<label class="check"><input type="checkbox" data-f="approval" ${d.approval?'checked':''}> Review before points are added</label>`:''}</section>`}
+  <section class="sec"><h2 class="sec-h">Who can see it</h2>
+    <div class="typecards three">${vcard('anyone','Anyone','Including non-members')}${vcard('registered','Registered members','Everyone in the community')}${vcard('segments','Specific segments','Only the groups you pick')}</div>
+    ${d.visibility==='segments'?`<div class="chk">${CFG.segments.map(s=>`<label class="check2"><input type="checkbox" data-act="draftSeg" data-seg="${esc(s)}" ${d.audience.includes(s)?'checked':''}> ${esc(s)}</label>`).join('')}</div>`:''}
+    <label class="check"><input type="checkbox" data-f="notify" ${d.notify?'checked':''}> Notify members when this goes live</label></section>
+  <section class="sec"><h2 class="sec-h">Points and limits</h2>
+    <div class="grid2">${f('points','Points *','min="0" required','number')}${f('limit','Times each member can earn it','min="1"','number')}</div>
+    <details class="logic" ${d.cap||d.budget?'open':''}><summary>More limits</summary><div class="grid2">${f('cap','Stop after this many completions','min="1" placeholder="No limit"','number')}${f('budget','Stop after this many points awarded','min="1" placeholder="No limit"','number')}</div></details></section>
+  <section class="sec"><h2 class="sec-h">Schedule</h2><div class="grid2">${f('start','Starts (blank for now)','','date')}${f('ends','Ends (blank for no end)','','date')}</div></section>`;
+}
+function surveySection(d){
+  return `<section class="sec"><h2 class="sec-h">Survey details</h2><label class="f" for="f-intro">Introduction</label><textarea id="f-intro" data-f="intro" rows="3" placeholder="Tell members what to expect and what they earn.">${esc(d.intro)}</textarea>
+  <label class="f" for="f-description">Short summary (shown on the mission list)</label><input id="f-description" data-f="description" type="text" value="${esc(d.description)}">
+  ${d.questions.map((q,i)=>qBuilder(d,q,i)).join('')}
+  <div class="actions"><button class="btn ghost" data-act="addQ">Add question</button></div>
+  <label class="check"><input type="checkbox" data-f="approval" ${d.approval?'checked':''}> Require review before points are added</label></section>`;
+}
+function qBuilder(d,q,i){
+  const prior = d.questions.slice(0,i);
+  const hasOpts = q.type==='checkbox'||q.type==='single'||q.type==='ack';
+  return `<div class="qcard"><div class="qhead"><b>Question ${i+1}</b><span class="sp"></span>
+    <label class="check2"><input type="checkbox" data-qi="${i}" data-qf="required" ${q.required?'checked':''}> Required</label>
+    <button class="btn ghost sm" data-act="moveQ" data-i="${i}" data-d="-1" ${i===0?'disabled':''} aria-label="Move up">↑</button><button class="btn ghost sm" data-act="moveQ" data-i="${i}" data-d="1" ${i===d.questions.length-1?'disabled':''} aria-label="Move down">↓</button>
+    <button class="btn danger sm" data-act="delQ" data-i="${i}" ${d.questions.length<2?'disabled':''}>Remove</button></div>
+    <div class="grid2"><div><label class="f" for="qt-${i}">Question text</label><textarea id="qt-${i}" rows="2" data-qi="${i}" data-qf="text">${esc(q.text)}</textarea></div>
+    <div><label class="f" for="qy-${i}">Answer type</label><select id="qy-${i}" data-qi="${i}" data-qf="type" data-struct="1">${[['checkbox','Checkboxes (pick any)'],['single','Single choice'],['text','Short text'],['ack','Confirmation checkbox']].map(([v,l])=>`<option value="${v}" ${q.type===v?'selected':''}>${l}</option>`).join('')}</select></div></div>
+    ${hasOpts?`<label class="f" for="qo-${i}">${q.type==='ack'?'Confirmation wording':'Options'} (one per line)</label><textarea id="qo-${i}" rows="${q.type==='ack'?1:4}" data-qi="${i}" data-qf="options">${esc((q.options||[]).join('\n'))}</textarea>`:''}
+    ${prior.length?`<details class="logic" ${q.logic&&q.logic.q?'open':''}><summary>Conditional logic</summary><p class="hint">Show this question only if…</p><div class="grid2"><select data-qi="${i}" data-qf="lq" aria-label="Earlier question"><option value="">Always show</option>${prior.map((p,j)=>`<option value="${p.id}" ${q.logic&&q.logic.q===p.id?'selected':''}>Question ${j+1} contains…</option>`).join('')}</select><input type="text" data-qi="${i}" data-qf="lv" placeholder="Value, for example Enterprise" aria-label="Value" value="${esc(q.logic?q.logic.value:'')}"></div></details>`:''}</div>`;
+}
+
+function previewHtml(d){
+  const m = draftToMission(d), cs = catStyle(m.category||''), title = m.title||'Mission title';
+  const sum = m.type==='survey' ? (m.description||firstSentence(m.intro)||'A short summary shows here.') : (firstSentence(m.description)||'A short description shows here.');
+  const aud = d.visibility==='segments' ? (d.audience.join(', ')||'Choose segments') : 'All members';
+  const row = `<div class="item static">${missionTile(m)}
+    <span class="ibody"><span class="ititle">${esc(title)}</span><span class="isub">${esc(sum)}</span><span class="imeta"><span>${esc(aud)}</span><span>${m.ends?'Ends '+fmtDate(m.ends):'Evergreen'}</span></span></span>
+    <span class="iside"><span class="pts">+${m.points}</span><span class="cta">Start mission →</span></span></div>`;
+  let inside = '';
+  if (m.type==='survey') inside = (m.intro?`<p class="intro">${linkify(m.intro)}</p>`:'')+(m.questions||[]).map((q,i)=>`<div class="pq"><b>${i+1}. ${esc(q.text)}${q.required?' *':''}</b>${q.type==='text'?'<div class="pfake"></div>':(q.options||[]).map(o=>`<div class="popt"><span class="pbox ${q.type==='single'?'round':''}"></span> ${esc(o)}</div>`).join('')}${q.logic&&q.logic.q?'<small class="m">Shown only if an earlier answer matches.</small>':''}</div>`).join('') || '<p class="m">Add a question to see it here.</p>';
+  else inside = `<p>${esc(m.description||'Instructions show here.')}</p>${m.type==='proof'?`<div class="pq"><b>${m.proof==='text'?'Details':'Link to your proof'}</b><div class="pfake"></div></div>`:''}`;
+  return row + `<div class="inside"><div class="m hint" style="margin-bottom:6px">Inside the mission</div>${inside}</div>`;
+}
+function updatePreview(){ const el = $('#preview'); if (el && UI.draft) el.innerHTML = previewHtml(UI.draft); }
+
+/* incentives */
+function incentivesPanel(){
+  const sub = [['rewards','Rewards'],['badges','Badges'],['levels','Levels']];
+  const tabsH = `<div class="subtabs" role="tablist">${sub.map(([id,l])=>`<button data-act="incTab" data-v="${id}" ${UI.incTab===id?'aria-current="page"':''}>${l}</button>`).join('')}</div>`;
+  const body = ({rewards:rewardsAdmin,badges:badgesAdmin,levels:levelsAdmin})[UI.incTab]();
+  return tabsH + body;
+}
+function rewardsAdmin(){
+  const red = S.redemptions, tot = red.filter(r=>r.status!=='declined'), unf = red.filter(r=>r.status==='requested');
+  const stats = `<div class="statcards three"><div class="stat"><b>${tot.length}</b><span>Total redeemed rewards</span></div><div class="stat"><b>${unf.length}</b><span>Unfulfilled</span></div><div class="stat"><b>${num(tot.reduce((a,r)=>a+r.cost,0))}</b><span>Total points redeemed</span></div></div>`;
+  const tb = `<div class="toolbar"><h2 class="sec-h" style="margin:0">${UI.incPending?'Pending approvals':'Rewards <span class="chip">'+S.rewards.length+' rewards</span>'}</h2><span class="sp"></span>
+    <button class="btn ghost" data-act="incPending">${UI.incPending?'Back to rewards':'Pending approvals'+(unf.length?` (${unf.length})`:'')}</button>${UI.incPending?'':'<button class="btn" data-act="newReward">Create reward</button>'}</div>`;
+  if (UI.incPending) return stats+tb+redemptionsPanel();
+  return stats+tb+`<div class="tablewrap"><table><thead><tr><th>Reward</th><th>Type</th><th>Points required</th><th>Total redeems</th><th>Points redeemed</th><th>Active</th><th><span class="sr">Actions</span></th></tr></thead><tbody>
+  ${S.rewards.map(r=>{const rs=red.filter(x=>x.rewardId===r.id&&x.status!=='declined');return `<tr><td><div class="tcell"><span class="tile sm rimgsm">${imgOrIcon(r.image,'gift')}</span><div><b>${esc(r.title)}</b>${r.tier?`<div class="m hint">Unlocks at ${esc((S.tiers[tierIdx(r.tier)]||{name:r.tier}).name)}</div>`:''}</div></div></td>
+  <td><span class="chip">${r.type==='physical'?'Physical':'Digital'}</span></td><td>${num(r.cost)}</td><td>${rs.length}</td><td>${num(rs.reduce((a,x)=>a+x.cost,0))}</td>
+  <td><button class="switch" role="switch" aria-checked="${r.active!==false}" data-act="toggleReward" data-id="${esc(r.id)}" aria-label="Active"><span></span></button></td>
+  <td><div class="inline"><button class="btn ghost sm" data-act="editReward" data-id="${esc(r.id)}">Edit</button><button class="btn danger sm" data-act="delReward" data-id="${esc(r.id)}">Delete</button></div></td></tr>`;}).join('')}</tbody></table></div>`;
+}
+function redemptionsPanel(){
+  const rows = S.redemptions.slice().reverse();
+  if (!rows.length) return '<p class="empty">No reward requests yet. Redeem a reward in member view to see one here.</p>';
+  return `<ul class="list">${rows.map(r=>`<li><div class="grow"><div class="t">${esc(r.title)}</div><div class="m">${esc(nameOf(r.memberId))}, requested ${fmtTs(r.ts)}, ${num(r.cost)} points</div></div>
+    ${r.status==='requested'?`<button class="btn sm" data-act="fulfill" data-id="${esc(r.id)}">Mark delivered</button><button class="btn sm danger" data-act="decline" data-id="${esc(r.id)}">Decline and refund</button>`:`<span class="chip ${r.status==='fulfilled'?'ok':'bad'}">${r.status==='fulfilled'?'Delivered':'Declined'}</span>`}</li>`).join('')}</ul>`;
+}
+function badgesAdmin(){
+  const earned = S.badgeAwards.length, act = S.badges.filter(b=>b.active).length;
+  return `<div class="statcards three"><div class="stat"><b>${earned}</b><span>Total badges earned</span></div><div class="stat"><b>${act}</b><span>Active badges</span></div><div class="stat"><b>${S.badges.length}</b><span>Total badges</span></div></div>
+  <div class="toolbar"><p class="notice" style="margin:0;flex:1">Badges can be awarded to members for achievements and milestones. Switch a badge off to stop awarding it.</p><button class="btn" data-act="newBadge">Create badge</button></div>
+  <div class="cardgrid">${S.badges.map(b=>{const n=S.badgeAwards.filter(x=>x.badgeId===b.id).length;return `<article class="bcard ${b.active?'':'off'}"><div class="bhead"> ${badgeImg(b)}<button class="switch" role="switch" aria-checked="${b.active}" data-act="toggleBadge" data-id="${esc(b.id)}" aria-label="Active"><span></span></button></div>
+    <h3>${esc(b.name)}</h3><p class="m">${esc(b.description)}</p><p class="hint">${esc(howText(b))}${b.visibility==='private'?'. Private.':''}</p><span class="chip">${n} ${n===1?'member':'members'} earned</span>
+    <div class="inline" style="margin-top:8px"><button class="btn ghost sm" data-act="editBadge" data-id="${esc(b.id)}">Edit</button><button class="btn danger sm" data-act="delBadge" data-id="${esc(b.id)}">Delete</button>${b.how&&b.how.type==='manual'?`<button class="btn ghost sm" data-act="giveBadge" data-id="${esc(b.id)}">Award to demo member</button>`:''}</div></article>`;}).join('')}</div>`;
+}
+function levelsAdmin(){
+  const counts = S.tiers.map(t=>Object.keys(S.people).filter(id=>tierFor(lifetime(id)).id===t.id).length);
+  return `<p class="hint" style="margin:0 0 10px">Levels follow lifetime points. The first level must start at 0.</p>
+  <form data-form="levels"><div class="tablewrap"><table><thead><tr><th>Level name</th><th>Starts at (points)</th><th>Members</th><th><span class="sr">Remove</span></th></tr></thead><tbody>
+  ${S.tiers.map((t,i)=>`<tr><td><input type="text" name="n${i}" value="${esc(t.name)}" required aria-label="Level ${i+1} name"></td><td><input type="number" name="m${i}" min="0" value="${t.min}" required aria-label="Level ${i+1} starting points" ${i===0?'readonly':''}></td><td>${counts[i]}</td><td>${i>0?`<button type="button" class="btn danger sm" data-act="delLevel" data-i="${i}">Remove</button>`:''}</td></tr>`).join('')}</tbody></table></div>
+  <div class="actions"><button type="button" class="btn ghost" data-act="addLevel">Add level</button><button class="btn" type="submit">Save levels</button></div></form>`;
+}
+function ledgerPanel(){
+  const rows = S.ledger.slice().sort((a,b)=>b.ts-a.ts);
+  return `<div class="toolbar"><span class="sp"></span><button class="btn ghost" data-act="exportCsv">Export CSV</button></div>
+  <div class="tablewrap"><table><thead><tr><th>Date</th><th>Member</th><th>Mission</th><th>Status</th><th>Points</th></tr></thead><tbody>
+  ${rows.map(e=>`<tr><td>${fmtTs(e.ts)}</td><td>${esc(nameOf(e.memberId))}</td><td>${esc((byId(e.missionId)||{title:e.missionId}).title)}</td><td>${esc(e.status==='awarded'?'Awarded':e.status==='pending'?'Pending':'Declined')}</td><td>${e.points}</td></tr>`).join('')}</tbody></table></div>`;
+}
+function settingsPanel(){
+  const base = location.protocol==='file:' ? 'https://YOUR-USER.github.io/community-missions/' : location.href.split('?')[0];
+  const embed = `<iframe src="${base}?embed=1&segments=Enterprise" title="${esc(CFG.brand.name)}" style="width:100%;border:0;min-height:720px" loading="lazy"></iframe>`;
+  return `<h2 class="sec-h">Embed code</h2>
+  <p class="hint" style="margin:0 0 8px">Paste into any page that allows iframes. Add <code>&amp;segments=Enterprise,Elite</code> to choose which missions show, or <code>&amp;mission=ID</code> to open one mission.</p>
+  <pre id="embedcode">${esc(embed)}</pre>
+  <div class="actions"><button class="btn ghost" data-act="copyEmbed">Copy embed code</button></div>
+  <h2 class="sec-h" style="margin-top:26px">Award service</h2>
+  <p class="hint" style="margin:0">${CFG.apiBase?`Events are sent to <code>${esc(CFG.apiBase)}/events</code>.`:'Not connected. Set <code>apiBase</code> in <code>data/config.js</code> to send award events to your own service (see the README).'}</p>
+  <h2 class="sec-h" style="margin-top:26px">Demo data</h2>
+  <p class="hint" style="margin:0 0 8px">Resets missions, submissions, rewards, badges and levels in this browser to the starting set. Saved data uses about ${Math.round(JSON.stringify(S).length/1024).toLocaleString()} KB of the roughly 5,000 KB this browser allows, and uploaded images are the biggest part.</p>
+  <button class="btn danger" data-act="reset">Reset demo data</button>`;
+}
+
+/* ---------- dialogs ---------- */
+function openDlg(html){ dlg.innerHTML = html; if (!dlg.open) dlg.showModal(); }
+function closeDlg(){ if (dlg.open) dlg.close(); }
+dlg.addEventListener('click',e=>{ if (e.target===dlg) closeDlg(); });
+const banner = (label,image) => `<div class="banner ${image?'hasimg':''}" ${image?`style="background-image:linear-gradient(rgba(28,30,97,.1),rgba(28,30,97,.6)),url('${esc(image)}')"`:''}><span class="badge">${esc(label)}</span><button class="x" data-act="closeDlg" aria-label="Close">&times;</button></div>`;
+
+function missionSheet(id){
+  const m = byId(id); if (!m) return;
+  const st = avail(m), isAdmin = !EMBED && UI.role==='admin', cs = catStyle(m.category);
+  const left = m.cap ? Math.max(0,m.cap-S.ledger.filter(e=>e.missionId===m.id&&active(e)).length) : null;
+  let action = '';
+  if (st==='open' && m.type==='survey') {
+    const qs = (m.questions||[]).map((q,i)=>{
+      let input = '';
+      if (q.type==='checkbox'||q.type==='ack') input = (q.options||[]).map(o=>`<label class="opt"><input type="checkbox" value="${esc(o)}"> ${esc(o)}</label>`).join('');
+      else if (q.type==='single') input = (q.options||[]).map(o=>`<label class="opt"><input type="radio" name="r_${esc(q.id)}" value="${esc(o)}"> ${esc(o)}</label>`).join('');
+      else input = `<textarea rows="3" aria-label="Your answer"></textarea>`;
+      return `<fieldset class="qf" data-qid="${esc(q.id)}"><legend>${i+1}. ${linkify(q.text)}${q.required?' <span class="req" aria-label="required">*</span>':''}</legend>${input}</fieldset>`;
+    }).join('');
+    action = `${m.intro?`<p class="intro">${linkify(m.intro)}</p>`:''}<form data-form="survey" data-id="${esc(m.id)}" novalidate>${qs}<p class="errmsg" role="alert" hidden></p><div class="actions"><button class="btn" type="submit">${needsReview(m)?'Submit for review':'Submit survey'}</button></div>
+      <p class="hint">${needsReview(m)?'A team member checks this before points are added.':'Points are added right away.'}</p></form>`;
+  } else if (st==='open') {
+    const proof = m.type==='proof'
+      ? (m.proof==='text' ? `<label class="f" for="proof">Details</label><textarea id="proof" name="proof" rows="3" required></textarea>` : `<label class="f" for="proof">Link to your proof</label><input id="proof" name="proof" type="url" inputmode="url" autocomplete="off" placeholder="https://" required>`)
+      : `<label class="f" for="proof">Note (optional)</label><textarea id="proof" name="proof" rows="3"></textarea>`;
+    action = `<form data-form="submit" data-id="${esc(m.id)}" novalidate>${proof}<p class="errmsg" role="alert" hidden></p><div class="actions"><button class="btn" type="submit">${needsReview(m)?'Submit for review':'Mark as done'}</button></div>
+      <p class="hint">${needsReview(m)?'A team member checks this before points are added.':'Points are added right away.'}</p></form>`;
+  } else {
+    const msg = ({done:"You've completed this mission.",pending:"Your submission is in review. We'll add the points once it's approved.",ended:'This mission has ended.',full:'All spots for this mission have been claimed.',auto:'This mission completes on its own. Do the activity described above and your points will be added.'})[st];
+    action = `<div class="notice">${msg}</div>`;
+  }
+  if (isAdmin && (st==='auto'||st==='open')) action += `<div class="actions"><button class="btn ghost" data-act="simulate" data-id="${esc(m.id)}">Simulate system event for demo member</button></div>`;
+  openDlg(banner(m.category,m.image)+`<div class="sheet"><h2 id="dlg-title">${esc(m.title)}</h2>
+    <dl class="facts"><dt>Points</dt><dd>${m.points}</dd><dt>Open to</dt><dd>${esc(visMode(m)==='segments'?(m.audience||[]).join(', '):'All members')}</dd><dt>Ends</dt><dd>${m.ends?fmtDate(m.ends):'Evergreen'}</dd>
+    ${(m.limit||1)>1?`<dt>Earn</dt><dd>Up to ${m.limit} times</dd>`:''}${left!==null?`<dt>Spots left</dt><dd>${left}</dd>`:''}</dl>
+    ${m.type==='survey'?'':`<p>${esc(m.description||'')}</p>`}${action}</div>`);
+  const f = dlg.querySelector('form[data-form=survey]'); if (f) applyLogic(f);
+}
+
+function rewardSheet(id){
+  const r = id ? S.rewards.find(x=>x.id===id) : {title:'',description:'',type:'physical',image:'',cost:100,tier:null,active:true};
+  if (!r) return;
+  UI.rdraft = Object.assign({id:id||''}, JSON.parse(JSON.stringify(r)));
+  const d = UI.rdraft;
+  openDlg(banner(id?'Edit reward':'Create reward')+`<div class="sheet"><h2 id="dlg-title">${id?'Edit reward':'Create reward'}</h2>
+  <form data-form="reward">
+    <label class="f">Reward type *</label><div class="typecards" id="rtype">${[['physical','Physical','Ships to the member\'s address'],['digital','Digital','Delivered by email']].map(([v,t,s])=>`<button type="button" class="tcard ${d.type===v?'sel':''}" data-act="rewardType" data-v="${v}"><b>${t}</b><small>${s}</small></button>`).join('')}</div>
+    <label class="f">Reward image</label>${uploader('reward',d.image,'')}
+    <label class="f" for="rf-cost">Points required *</label><input id="rf-cost" data-rf="cost" type="number" min="1" value="${d.cost}" required>
+    <label class="f" for="rf-title">Reward name *</label><input id="rf-title" data-rf="title" type="text" placeholder="Enter a memorable name" value="${esc(d.title)}" required>
+    <label class="f" for="rf-desc">Description</label><textarea id="rf-desc" data-rf="description" rows="3">${esc(d.description)}</textarea>
+    <label class="f" for="rf-tier">Unlocks at level</label><select id="rf-tier" data-rf="tier"><option value="">Any level</option>${S.tiers.map(t=>`<option value="${esc(t.id)}" ${d.tier===t.id?'selected':''}>${esc(t.name)}</option>`).join('')}</select>
+    <label class="check"><input type="checkbox" data-rf="active" ${d.active!==false?'checked':''}> Active (visible to members)</label>
+    <h3 class="sub-h">Live preview</h3>
+    <article class="rcard prev"><div class="rimg"><span class="newtag">New</span><span id="rp-img" style="display:contents">${imgOrIcon(d.image,'gift','lg')}</span></div><h3 id="rp-title">${esc(d.title||'My reward name')}</h3><p class="m" id="rp-type">${d.type==='physical'?'Ships to your address':'Delivered by email'}</p><p id="rp-desc">${esc(d.description)}</p>
+    <div class="rfoot"><span class="pts" id="rp-cost">${num(d.cost)} points</span><button type="button" class="btn" disabled>Redeem</button></div><p class="hint" id="rp-left">You have ${num(d.cost)} points left until you can redeem this reward.</p></article>
+    <div class="actions"><button class="btn" type="submit">${id?'Save reward':'Create reward'}</button><button class="btn ghost" type="button" data-act="closeDlg">Cancel</button></div>
+  </form></div>`);
+}
+function updateRewardPreview(){
+  const d = UI.rdraft; if (!d) return;
+  const set = (id,t)=>{ const el=$('#'+id); if (el) el.textContent=t; };
+  { const el = $('#rp-img'); if (el) el.innerHTML = imgOrIcon(d.image,'gift','lg'); } set('rp-title',d.title||'My reward name'); set('rp-desc',d.description||'');
+  set('rp-type',d.type==='physical'?'Ships to your address':'Delivered by email'); set('rp-cost',num(d.cost)+' points'); set('rp-left',`You have ${num(d.cost)} points left until you can redeem this reward.`);
+  document.querySelectorAll('#rtype .tcard').forEach(b=>b.classList.toggle('sel',b.dataset.v===d.type));
+}
+
+function howValueHtml(d){
+  const h = d.how||{type:'manual',value:''};
+  if (h.type==='mission') return `<label class="f" for="bf-hv">Mission</label><select id="bf-hv" data-bf="howValue">${S.missions.map(m=>`<option value="${esc(m.id)}" ${h.value===m.id?'selected':''}>${esc(m.title)}</option>`).join('')}</select>`;
+  if (h.type==='points') return `<label class="f" for="bf-hv">Lifetime points</label><input id="bf-hv" data-bf="howValue" type="number" min="1" value="${esc(h.value||100)}">`;
+  if (h.type==='level') return `<label class="f" for="bf-hv">Level</label><select id="bf-hv" data-bf="howValue">${S.tiers.map(t=>`<option value="${esc(t.id)}" ${h.value===t.id?'selected':''}>${esc(t.name)}</option>`).join('')}</select>`;
+  return '<p class="hint">The team awards this badge by hand.</p>';
+}
+function badgeSheet(id){
+  const b = id ? S.badges.find(x=>x.id===id) : {name:'',image:'',description:'',how:{type:'manual',value:''},visibility:'public',active:true};
+  if (!b) return;
+  UI.bdraft = Object.assign({id:id||''}, JSON.parse(JSON.stringify(b)));
+  const d = UI.bdraft;
+  openDlg(banner(id?'Edit badge':'Create badge')+`<div class="sheet"><h2 id="dlg-title">${id?'Edit badge':'Create badge'}</h2>
+  <div class="notice"><b>Tips for effective badges</b><ul style="margin:6px 0 0;padding-left:18px"><li>Choose a clear name that reflects the achievement.</li><li>Write a short description of what the badge means.</li><li>Switch the badge to active when you're ready for members to earn it.</li></ul></div>
+  <form data-form="badge">
+    <label class="f">Badge image</label>${uploader('badge',d.image,'round')}<p class="hint">Square images work best. Badges are shown in a circle.</p>
+    <label class="f" for="bf-name">Badge name *</label><input id="bf-name" data-bf="name" type="text" placeholder="For example Champion, Explorer" value="${esc(d.name)}" required>
+    <label class="f" for="bf-desc">Description *</label><textarea id="bf-desc" data-bf="description" rows="3" required>${esc(d.description)}</textarea>
+    <label class="f" for="bf-how">How to earn *</label><select id="bf-how" data-bf="howType" data-struct="how">${[['manual','Awarded by the team'],['mission','Complete a mission'],['points','Reach a points total'],['level','Reach a level']].map(([v,l])=>`<option value="${v}" ${d.how.type===v?'selected':''}>${l}</option>`).join('')}</select>
+    <div id="how-val">${howValueHtml(d)}</div>
+    <label class="f">Badge visibility *</label>
+    <label class="opt"><input type="radio" name="bvis" value="public" data-bf="visibility" ${d.visibility!=='private'?'checked':''}> Public: everyone can see it and how to earn it</label>
+    <label class="opt"><input type="radio" name="bvis" value="private" data-bf="visibility" ${d.visibility==='private'?'checked':''}> Private: only members who earned it can see it</label>
+    <label class="check"><input type="checkbox" data-bf="active" ${d.active!==false?'checked':''}> Active</label>
+    <div class="actions"><button class="btn" type="submit">${id?'Save badge':'Create badge'}</button><button class="btn ghost" type="button" data-act="closeDlg">Cancel</button></div>
+  </form></div>`);
+}
+
+/* ---------- forms ---------- */
+document.addEventListener('submit',e=>{
+  const f = e.target; if (!f.dataset || !f.dataset.form) return;
+  e.preventDefault();
+  const kind = f.dataset.form, d = new FormData(f);
+  if (kind==='submit') {
+    const m = byId(f.dataset.id); if (!m || avail(m)!=='open') return;
+    const field = f.querySelector('#proof');
+    let proof = (d.get('proof')||'').trim();
+    if (m.type==='proof' && m.proof!=='text') { proof = normalizeUrl(proof); if (!safeUrl(proof)) return formError(f,'Paste the full link, for example https://www.linkedin.com/in/yourname.',field); }
+    else if (m.type==='proof' && !proof) return formError(f,'Add the details we need to check this.',field);
+    const r = submit(m,proof); closeDlg(); toast(r.status==='awarded' ? `+${m.points} points added` : 'Submitted for review'); render();
+  } else if (kind==='survey') {
+    const m = byId(f.dataset.id); if (!m || avail(m)!=='open') return;
+    const ans = readAnswers(f,m); let bad = null; const shown = {};
+    (m.questions||[]).forEach(q=>{
+      if (!qShown(q,ans)) return; shown[q.id] = ans[q.id];
+      const a = ans[q.id], empty = Array.isArray(a) ? !a.length : (typeof a==='boolean' ? !a : !String(a||'').trim());
+      if (q.required && empty && !bad) bad = q;
+    });
+    f.querySelectorAll('.qf.err').forEach(x=>x.classList.remove('err'));
+    if (bad) { const box = f.querySelector(`[data-qid="${bad.id}"]`); box.classList.add('err'); const inp = box.querySelector('input,textarea'); return formError(f,'Answer the required questions marked with * to continue.',inp); }
+    const r = submit(m,'',null,shown); closeDlg(); toast(r.status==='awarded' ? `+${m.points} points added` : 'Submitted for review'); render();
+  } else if (kind==='reward') {
+    const r = UI.rdraft; if (!r.title.trim()) return toast('Give the reward a name.'); if (!(+r.cost>0)) return toast('Set the points required.');
+    const rec = {id:r.id||slug(r.title)+'-'+uid().slice(-3),title:r.title.trim(),description:(r.description||'').trim(),type:r.type,image:r.image||'',cost:+r.cost,tier:r.tier||null,active:r.active!==false,createdAt:r.createdAt||Date.now()};
+    const i = S.rewards.findIndex(x=>x.id===rec.id); if (i>=0) S.rewards[i]=rec; else S.rewards.push(rec);
+    persist(); closeDlg(); toast('Reward saved'); render();
+  } else if (kind==='badge') {
+    const b = UI.bdraft; if (!b.name.trim()||!b.description.trim()) return toast('Add a name and description.');
+    const rec = {id:b.id||slug(b.name)+'-'+uid().slice(-3),name:b.name.trim(),image:b.image||'',description:b.description.trim(),how:b.how,visibility:b.visibility||'public',active:b.active!==false};
+    const i = S.badges.findIndex(x=>x.id===rec.id); if (i>=0) S.badges[i]=rec; else S.badges.push(rec);
+    Object.keys(S.people).forEach(checkBadges); persist(); closeDlg(); toast('Badge saved'); render();
+  } else if (kind==='levels') {
+    const rows = S.tiers.map((t,i)=>({id:t.id,name:String(d.get('n'+i)||'').trim(),min:+d.get('m'+i)}));
+    if (rows.some(r=>!r.name||isNaN(r.min))) return toast('Every level needs a name and a points value.');
+    rows[0].min = 0;
+    for (let i=1;i<rows.length;i++) if (rows[i].min<=rows[i-1].min) return toast('Each level must start at more points than the one before.');
+    S.tiers = rows; CFG.tiers = S.tiers; persist(); toast('Levels saved'); render();
+  }
+});
+
+/* ---------- input handling ---------- */
+document.addEventListener('input',e=>{
+  const t = e.target;
+  const ef = t.closest && t.closest('form[data-form=submit],form[data-form=survey]'); if (ef) { const em = ef.querySelector('.errmsg'); if (em) em.hidden = true; t.removeAttribute && t.removeAttribute('aria-invalid'); }
+  if (t.id==='mq') { UI.mq = t.value; $('#mbody').innerHTML = missionRowsAdmin(); return; }
+  if (t.id==='subq') { UI.subQ = t.value; $('#sublist').innerHTML = subList([...new Set(S.ledger.filter(x=>x.missionId===UI.subs&&x.status==='awarded').map(x=>x.memberId))],t.value.toLowerCase()); return; }
+  if (t.dataset.f && UI.draft) { UI.draft[t.dataset.f] = t.type==='checkbox' ? t.checked : t.value; if (t.dataset.f!=='trigger') updatePreview(); return; }
+  if (t.dataset.qi!==undefined && UI.draft && !t.dataset.struct) {
+    const q = UI.draft.questions[+t.dataset.qi], f = t.dataset.qf; if (!q) return;
+    if (f==='options') q.options = t.value.split('\n').map(s=>s.trim()).filter(Boolean);
+    else if (f==='required') q.required = t.checked;
+    else if (f==='text') q.text = t.value;
+    else if (f==='lq') { q.logic = Object.assign({q:'',op:'contains',value:''},q.logic||{},{q:t.value}); }
+    else if (f==='lv') { q.logic = Object.assign({q:'',op:'contains',value:''},q.logic||{},{value:t.value}); }
+    updatePreview(); return;
+  }
+  if (t.dataset.rf && UI.rdraft) { UI.rdraft[t.dataset.rf] = t.type==='checkbox' ? t.checked : t.value; updateRewardPreview(); return; }
+  if (t.dataset.bf && UI.bdraft && !t.dataset.struct) {
+    const f = t.dataset.bf;
+    if (f==='howValue') UI.bdraft.how = Object.assign({},UI.bdraft.how,{value:t.value});
+    else if (t.type==='checkbox') UI.bdraft[f] = t.checked;
+    else UI.bdraft[f] = t.value;
+  }
+});
+document.addEventListener('change',e=>{
+  const t = e.target;
+  if (t.dataset && t.dataset.up && t.type==='file') { if (t.files[0]) handleUpload(t.dataset.up,t.files[0]); t.value=''; return; }
+  if (t.dataset && t.dataset.act==='seg') return ACT.seg(t.dataset,t);
+  if (t.dataset && t.dataset.act==='importJson' && t.files[0]) {
+    t.files[0].text().then(txt=>{ try { const arr=JSON.parse(txt); if(!Array.isArray(arr)) throw 0; S.missions=arr; persist(); toast('Missions imported'); render(); } catch(err){ toast('That file is not a valid missions list.'); } });
+    return;
+  }
+  if (t.id==='mstatus') { UI.mStatus = t.value; return render(); }
+  if (t.dataset.f==='trigger' && UI.draft) { UI.draft.trigger = t.value; if (t.value==='survey' && !UI.draft.questions.length) UI.draft.questions=[newQ()]; return render(); }
+  if (t.dataset.act==='selApr') { const a=UI.sel||[]; UI.sel = t.checked ? [...new Set([...a,t.dataset.id])] : a.filter(x=>x!==t.dataset.id); return render(); }
+  if (t.dataset.act==='selAll') { UI.sel = t.checked ? S.ledger.filter(e=>e.status==='pending').map(e=>e.id) : []; return render(); }
+  if (t.dataset.struct && t.dataset.qi!==undefined && UI.draft) {
+    const q = UI.draft.questions[+t.dataset.qi]; q.type = t.value;
+    if (q.type==='ack') q.options = ['I have done this.']; else if (q.type==='text') q.options = []; else if (!q.options.length || (q.options.length===1&&/^I have/.test(q.options[0]))) q.options = ['Option 1','Option 2'];
+    return render();
+  }
+  if (t.dataset.struct==='how' && UI.bdraft) { UI.bdraft.how = {type:t.value,value:t.value==='mission'?(S.missions[0]||{}).id:t.value==='level'?(S.tiers[0]||{}).id:t.value==='points'?100:''}; $('#how-val').innerHTML = howValueHtml(UI.bdraft); return; }
+  const form = t.closest && t.closest('form[data-form=survey]'); if (form) applyLogic(form);
+});
+
+/* ---------- image uploads ---------- */
+function refreshDlgUploader(kind,img){ const el = dlg.querySelector(`.uploader[data-up="${kind}"]`); if (el) el.outerHTML = uploader(kind,img,kind==='badge'?'round':''); }
+async function handleUpload(kind,file){
+  try {
+    const data = await processImage(file);
+    if (kind==='mission' && UI.draft) { UI.draft.image = data; render(); }
+    else if (kind==='reward' && UI.rdraft) { UI.rdraft.image = data; refreshDlgUploader('reward',data); updateRewardPreview(); }
+    else if (kind==='badge' && UI.bdraft) { UI.bdraft.image = data; refreshDlgUploader('badge',data); }
+    else return;
+    toast('Image added');
+  } catch(e) { toast(e.message || 'That image could not be read. Try a PNG or JPG.'); }
+}
+document.addEventListener('dragover',e=>{ const z = e.target.closest && e.target.closest('.uploader'); if (z) { e.preventDefault(); z.classList.add('drag'); } });
+document.addEventListener('dragleave',e=>{ const z = e.target.closest && e.target.closest('.uploader'); if (z) z.classList.remove('drag'); });
+document.addEventListener('drop',e=>{ const z = e.target.closest && e.target.closest('.uploader'); if (!z) return; e.preventDefault(); z.classList.remove('drag'); const f = e.dataTransfer && e.dataTransfer.files[0]; if (f) handleUpload(z.dataset.up,f); });
+
+/* ---------- actions ---------- */
+function download(name,type,text){ const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([text],{type})); a.download=name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),1000); }
+const csvCell = v => '"'+String(v==null?'':v).replace(/"/g,'""')+'"';
+function validateDraft(d){
+  if (!d.title.trim()) return 'Give the mission a title.';
+  if (!d.category.trim()) return 'Add a category tag.';
+  if (d.visibility==='segments' && !d.audience.length) return 'Choose at least one segment.';
+  if (d.trigger==='survey') {
+    const qs = d.questions.filter(q=>q.text.trim());
+    if (!qs.length) return 'Add at least one question.';
+    if (qs.some(q=>(q.type==='checkbox'||q.type==='single'||q.type==='ack') && !(q.options||[]).length)) return 'Every choice question needs at least one option.';
+  } else if (!d.description.trim()) return 'Describe what members should do.';
+  return '';
+}
+const ACT = {
+  role:d=>{UI.role=d.role;render();},
+  seg:(d,el)=>{ S.meSegments = el.checked ? [...new Set([...S.meSegments,d.seg])] : S.meSegments.filter(x=>x!==d.seg); persist(); render(); },
+  tab:d=>{UI.tab=d.tab;render();},
+  atab:d=>{UI.adminTab=d.tab;UI.draft=null;UI.chooser=false;UI.subs=null;UI.declining=null;render();},
+  ovGo:d=>{UI.adminTab=d.tab;render();},
+  cat:d=>{UI.cat=d.v;render();},
+  status:d=>{UI.status=d.v;render();},
+  open:d=>missionSheet(d.id),
+  closeDlg:closeDlg,
+  redeem:d=>redeem(d.id),
+  approve:d=>{decide(d.id,'awarded');toast('Approved. Points added.');render();},
+  approveSel:()=>{ const ids=(UI.sel||[]).slice(); ids.forEach(id=>decide(id,'awarded')); UI.sel=[]; toast(ids.length+(ids.length===1?' submission approved':' submissions approved')); render(); },
+  rejectConfirm:d=>{const why=($('#why-'+d.id)||{}).value||'Not approved. Check the instructions and try again.';decide(d.id,'rejected',why);UI.declining=null;toast('Declined');render();},
+  cancelDecline:()=>{UI.declining=null;render();},
+  reject:d=>{UI.declining=d.id;render();},
+  simulate:d=>{const m=byId(d.id); submit(m,'','system'); closeDlg(); toast(`System event recorded: +${m.points} points`); render();},
+  fulfill:d=>{const r=S.redemptions.find(x=>x.id===d.id); r.status='fulfilled'; persist(); emit('redemption.fulfilled',{redemption:r}); toast('Marked delivered'); render();},
+  decline:d=>{const r=S.redemptions.find(x=>x.id===d.id); r.status='declined'; persist(); emit('redemption.declined',{redemption:r}); toast('Declined. Points returned to the member.'); render();},
+  /* missions admin */
+  newMission:()=>{UI.adminTab='missions';UI.draft=null;UI.chooser=true;UI.subs=null;render();},
+  pickTemplate:d=>{UI.draft=templateDraft(d.v);UI.chooser=false;render();},
+  copyFrom:()=>{const m=byId(($('#copyfrom')||{}).value); if(!m) return; const d=draftFrom(m); d.id=''; d.title=m.title+' (copy)'; UI.draft=d; UI.chooser=false; render();},
+  editMission:d=>{UI.adminTab='missions';UI.draft=draftFrom(byId(d.id));UI.chooser=false;UI.subs=null;render();},
+  dupMission:d=>{const m=JSON.parse(JSON.stringify(byId(d.id))); m.id=m.id+'-copy-'+uid().slice(-3); m.title+=' (copy)'; m.active=false; S.missions.push(m); persist(); toast('Duplicated as a draft'); render();},
+  delMission:d=>{ if(!confirm('Delete this mission permanently? Existing ledger entries are kept.')) return; S.missions=S.missions.filter(m=>m.id!==d.id); persist(); toast('Mission deleted'); render(); },
+  pin:d=>{const m=byId(d.id); m.pinned=!m.pinned; persist(); render();},
+  toggleMission:d=>{const m=byId(d.id); m.active=m.active===false; persist(); toast(m.active?'Mission is active':'Mission is a draft'); render();},
+  copyLink:d=>{ const u=location.href.split('?')[0]+'?mission='+encodeURIComponent(d.id); (navigator.clipboard?navigator.clipboard.writeText(u):Promise.reject()).then(()=>toast('Mission link copied'),()=>toast(u)); },
+  viewSubs:d=>{UI.subs=d.id;UI.subTab='content';UI.subQ='';render();},
+  backMissions:()=>{UI.subs=null;render();},
+  subTab:d=>{UI.subTab=d.v;render();},
+  exportSubs:d=>{ const m=byId(d.id); const qs=m.questions||[]; const head=['member','date','status','proof',...qs.map(q=>q.text)];
+    const rows=S.ledger.filter(e=>e.missionId===m.id&&active(e)).map(e=>[nameOf(e.memberId),new Date(e.ts).toISOString(),e.status,e.proof,...qs.map(q=>{const a=(e.answers||{})[q.id];return Array.isArray(a)?a.join('; '):a===undefined?'':a;})]);
+    download('submissions-'+m.id+'.csv','text/csv',[head,...rows].map(r=>r.map(csvCell).join(',')).join('\n')); },
+  /* wizard */
+  draftSet:d=>{ UI.draft[d.k] = d.v==='true'?true:d.v==='false'?false:d.v; render(); },
+  draftSeg:(d,el)=>{ const a=UI.draft.audience; UI.draft.audience = el.checked ? [...new Set([...a,d.seg])] : a.filter(x=>x!==d.seg); },
+  addQ:()=>{UI.draft.questions.push(newQ());render();},
+  delQ:d=>{UI.draft.questions.splice(+d.i,1);render();},
+  moveQ:d=>{const a=UI.draft.questions,i=+d.i,j=i+ +d.d; if(j<0||j>=a.length) return; [a[i],a[j]]=[a[j],a[i]]; render();},
+  editorCancel:()=>{UI.draft=null;UI.chooser=false;render();},
+  editorSave:d=>{ const err=validateDraft(UI.draft); if (err) return toast(err);
+    const m=draftToMission(UI.draft); m.active = !d.draft; const i=S.missions.findIndex(x=>x.id===m.id);
+    if (i>=0) S.missions[i]=m; else S.missions.push(m);
+    UI.draft=null; persist(); toast(m.active?'Mission is live':'Saved as a draft'); render(); },
+  /* incentives */
+  incTab:d=>{UI.incTab=d.v;UI.incPending=false;render();},
+  incPending:()=>{UI.incPending=!UI.incPending;render();},
+  newReward:()=>rewardSheet(null), editReward:d=>rewardSheet(d.id),
+  rewardType:d=>{ UI.rdraft.type=d.v; updateRewardPreview(); },
+  delReward:d=>{ if(!confirm('Delete this reward? Past requests are kept.')) return; S.rewards=S.rewards.filter(r=>r.id!==d.id); persist(); render(); },
+  toggleReward:d=>{const r=S.rewards.find(x=>x.id===d.id); r.active=r.active===false; persist(); render();},
+  newBadge:()=>badgeSheet(null), editBadge:d=>badgeSheet(d.id),
+  delBadge:d=>{ if(!confirm('Delete this badge? Members who earned it will lose it.')) return; S.badges=S.badges.filter(b=>b.id!==d.id); S.badgeAwards=S.badgeAwards.filter(x=>x.badgeId!==d.id); persist(); render(); },
+  toggleBadge:d=>{const b=S.badges.find(x=>x.id===d.id); b.active=!b.active; if(b.active) Object.keys(S.people).forEach(checkBadges); persist(); render();},
+  giveBadge:d=>{ if(!earnedBadge(ME,d.id)) { S.badgeAwards.push({memberId:ME,badgeId:d.id,ts:Date.now()}); persist(); } toast('Badge awarded to the demo member'); render(); },
+  addLevel:()=>{ const last=S.tiers[S.tiers.length-1]; S.tiers.push({id:'level-'+uid().slice(-3),name:'New level',min:last.min+200}); render(); },
+  delLevel:d=>{ S.tiers.splice(+d.i,1); persist(); render(); },
+  rmImage:d=>{
+    if (d.kind==='mission' && UI.draft) { UI.draft.image=''; render(); }
+    else if (d.kind==='reward' && UI.rdraft) { UI.rdraft.image=''; refreshDlgUploader('reward',''); updateRewardPreview(); }
+    else if (d.kind==='badge' && UI.bdraft) { UI.bdraft.image=''; refreshDlgUploader('badge',''); }
+  },
+  /* misc */
+  exportJson:()=>download('missions.json','application/json',JSON.stringify(S.missions,null,2)),
+  exportCsv:()=>{ const head=['id','date','member','mission','status','points','proof','reason'];
+    const rows=S.ledger.map(e=>[e.id,new Date(e.ts).toISOString(),nameOf(e.memberId),(byId(e.missionId)||{title:e.missionId}).title,e.status,e.points,e.proof,e.reason]);
+    download('ledger.csv','text/csv',[head,...rows].map(r=>r.map(csvCell).join(',')).join('\n')); },
+  copyEmbed:()=>{ const t=$('#embedcode').textContent; (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast('Embed code copied'),()=>toast('Select the code and copy it manually.')); },
+  reset:()=>{ if(!confirm('Reset all demo data in this browser?')) return; S=seed(); CFG.tiers=S.tiers; UI.draft=null; UI.subs=null; persist(); toast('Demo data reset'); render(); }
+};
+const closeMenus = except => document.querySelectorAll('details.menu[open]').forEach(d=>{ if (d!==except) d.open=false; });
+document.addEventListener('keydown',e=>{ if (e.key==='Escape') closeMenus(); });
+document.addEventListener('click',e=>{
+  const own = e.target.closest('details.menu');
+  closeMenus(own && e.target.closest('summary') ? own : null);
+  const t = e.target.closest('[data-act]'); if (!t || (t.tagName==='INPUT' && t.type!=='checkbox') || t.type==='file') return;
+  if (t.tagName==='INPUT') return;               // checkboxes are handled by 'change'/'input'
+  const f = ACT[t.dataset.act]; if (f) f(t.dataset,t,e);
+});
+document.addEventListener('change',e=>{ const t=e.target; if (t.tagName==='INPUT' && t.type==='checkbox' && t.dataset.act==='draftSeg') ACT.draftSeg(t.dataset,t); });
+
+let tt; function toast(msg){
+  const el = $('#toast'); el.textContent = msg;
+  try { if (el.showPopover && !el.matches(':popover-open')) el.showPopover(); } catch(e) {}
+  requestAnimationFrame(()=>el.classList.add('show'));
+  clearTimeout(tt); tt = setTimeout(()=>{ el.classList.remove('show'); try { if (el.hidePopover && el.matches(':popover-open')) el.hidePopover(); } catch(e) {} },4200);
+}
+
+boot();
+render();
+if (Q.get('mission') && byId(Q.get('mission'))) missionSheet(Q.get('mission'));
+})();
+</script>
+</body>
+</html>
